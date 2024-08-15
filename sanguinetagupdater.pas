@@ -4,7 +4,6 @@ program SanguineTagUpdater;
 {$FATAL You need at least Free Pascal version 3.2.2 to compile Sanguine Tag Updater.}
 {$ENDIF}
 
-
 {$mode objfpc}{$H+}
 
 uses
