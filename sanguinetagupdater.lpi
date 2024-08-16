@@ -68,7 +68,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="bin\sanguinetagupdater"/>
+            <Filename Value="bin\sanguinetagupdater_intel"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
@@ -101,7 +101,7 @@
           <Version Value="11"/>
           <PathDelim Value="\"/>
           <Target>
-            <Filename Value="bin\sanguinetagupdater"/>
+            <Filename Value="bin\sanguinetagupdater_arm"/>
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
