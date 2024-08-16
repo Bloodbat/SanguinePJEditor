@@ -22,3 +22,9 @@ Parameters:
 
 Parameters are case insensitive
 ```
+
+Example:
+
+`sanguinetagupdater plugin.json`
+
+Parses the manifest in plugin.json and updates the deprecated tags as needed.
