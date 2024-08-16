@@ -68,7 +68,6 @@ resourcestring
   // Status
   rsReady = 'Ready';
   rsLoading = 'Loading...';
-  rsParsing = 'Parsing...';
   rsSaving = 'Saving...';
 
   // Errors

@@ -13,11 +13,10 @@ uses
   Classes,
   SysUtils,
   CustApp,
-  JSONParser,
   FPJson,
-  JSONScanner,
   PJStrings,
-  ModuleTagging;
+  ModuleTagging,
+  SanguineJSONReader;
 
 resourcestring
   rsHelpDesc1 = 'A program to update deprecated tags for VCV Rack plugin manifests.';
@@ -52,6 +51,7 @@ type
   TSanguineTagUpdater = class(TCustomApplication)
   protected
     procedure DoRun; override;
+    procedure DoParseError; virtual;
     function ParseCommandLine: TOptionsResult; virtual;
     procedure PrintError(const ErrorMsg: string); virtual;
     procedure PrintHeader; virtual;
@@ -64,10 +64,8 @@ type
     destructor Destroy; override;
   private
     FInFileName: string;
-    FParseOk: boolean;
     FModules: TJSONArray;
     FRoot: TJSONData;
-    procedure OpenFile;
   end;
 
   { TSanguineTagUpdater }
@@ -81,8 +79,8 @@ type
       begin
         WriteLn(Format(rsStatusStartUpdate, [FInFileName]));
         WriteLn;
-        OpenFile;
-        if FParseOk then
+        ReadJSon(FInFileName, FRoot, @DoParseError);
+        if FRoot <> nil then
           if ProcessModules then
           begin
             SaveManifest;
@@ -93,6 +91,11 @@ type
         PrintError(Format(rsErrorFileNotFound, [FInFileName]));
     end;
     Terminate;
+  end;
+
+  procedure TSanguineTagUpdater.DoParseError;
+  begin
+    PrintError(rsErrorInvalidJSon);
   end;
 
   function TSanguineTagUpdater.ParseCommandLine: TOptionsResult;
@@ -271,8 +274,8 @@ type
   begin
     inherited;
     FInFileName := '';
-    FParseOk := False;
     FRoot := nil;
+    StopOnException := True;
   end;
 
   destructor TSanguineTagUpdater.Destroy;
@@ -280,30 +283,6 @@ type
     if Assigned(FRoot) then
       FreeAndNil(FRoot);
     inherited;
-  end;
-
-  procedure TSanguineTagUpdater.OpenFile;
-  var
-    FileStream: TFileStream;
-    JParser: TJSONParser;
-  begin
-    FileStream := TFileStream.Create(FInFileName, fmOpenRead or fmShareDenyWrite);
-    try
-      JParser := TJSONParser.Create(FileStream, []);
-      try
-        JParser.Options := JParser.Options + [joStrict];
-        try
-          FRoot := JParser.Parse;
-        except
-          PrintError(rsErrorInvalidJSon);
-        end;
-      finally
-        JParser.Free;
-      end;
-    finally
-      FileStream.Free;
-    end;
-    FParseOk := True;
   end;
 
 var
