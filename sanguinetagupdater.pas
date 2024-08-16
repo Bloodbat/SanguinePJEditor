@@ -51,7 +51,7 @@ type
   TSanguineTagUpdater = class(TCustomApplication)
   protected
     procedure DoRun; override;
-    procedure DoParseError; virtual;
+    procedure DoParserError; virtual;
     function ParseCommandLine: TOptionsResult; virtual;
     procedure PrintError(const ErrorMsg: string); virtual;
     procedure PrintHeader; virtual;
@@ -79,7 +79,7 @@ type
       begin
         WriteLn(Format(rsStatusStartUpdate, [FInFileName]));
         WriteLn;
-        ReadJSon(FInFileName, FRoot, @DoParseError);
+        ReadJSon(FInFileName, FRoot, @DoParserError);
         if FRoot <> nil then
           if ProcessModules then
           begin
@@ -93,7 +93,7 @@ type
     Terminate;
   end;
 
-  procedure TSanguineTagUpdater.DoParseError;
+  procedure TSanguineTagUpdater.DoParserError;
   begin
     PrintError(rsErrorInvalidJSon);
   end;
