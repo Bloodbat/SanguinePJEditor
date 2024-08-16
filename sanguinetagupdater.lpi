@@ -257,6 +257,7 @@
       <Unit>
         <Filename Value="src\moduletagging.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ModuleTagging"/>
       </Unit>
       <Unit>
         <Filename Value="src\sanguinejsonreader.pas"/>
