@@ -21,6 +21,8 @@
 
 ARCH_UNKNOWN = 1
 
+COMPILERFLAGS = -MObjFPC -Scghim -CX -O3 -Xs -XX -l -vewnhibq -Fusrc -Fu. -FEbin
+
 ifeq ($(OS),Windows_NT)
 	ARCH_WIN = 1
 	CPU_X64 = 1
@@ -34,13 +36,6 @@ else
 	endif
 	ifeq ($(UNAME_OS),Darwin)
 		ARCH_MAC = 1
-		UNAME_CPU := $(shell uname -p)
-		ifeq ($(UNAME_CPU),x86_64)
-			CPU_X64 = 1
-		endif
-		ifneq ($(filter arm%,$(UNAME_P)),)
-			CPU_ARM = 1
-		endif
 		undefine ARCH_UNKNOWN
 	endif
 endif
@@ -50,26 +45,52 @@ $(error Could not determine machine type.)
 endif
 
 ifdef ARCH_WIN
-PROJECT_FILE = Release Intel x64
+LIBFOLDER = lib\x86_64-win64
+COMPILERFLAGS += -Fi$(LIBFOLDER) -FU$(LIBFOLDER) -Px86_64 -CpCOREAVX -obin\sanguinetagupdater.exe
 endif
 
 ifdef ARCH_LIN
-PROJECT_FILE = Release Intel x64
+LIBFOLDER = lib/x86_64-linux
+COMPILERFLAGS += -Cg -Fi$(LIBFOLDER) -FU$(LIBFOLDER) -Px86_64 -CpCOREAVX -obin\sanguinetagupdater
 endif
 
 ifdef ARCH_MAC
-ifdef CPU_X64
-PROJECT_FILE = Release Mac Intel
-endif
-ifdef CPU_ARM
-PROJECT_FILE = Release Mac ARM
-endif
+LIBX64FOLDER = lib/x86_64-darwin
+LIBARMFOLDER = lib/aarch64-darwin
+COMPILERFLAGSX64 = -Px86_64 -CpCOREAVX -Fi$(LIBX64FOLDER) -FU$(LIBX64FOLDER) -obin/sanguinetagupdater_intel
+COMPILERFLAGSARM = -Paarch64 -Fi$(LIBARMFOLDER) -FU$(LIBARMFOLDER) -obin/sanguinetagupdater_arm
 endif
 
 all: sanguinetagupdater
 
+ifndef ARCH_MAC
 sanguinetagupdater:
-	lazbuild --bm="$(PROJECT_FILE)" sanguinetagupdater.lpi
+	-md lib
+	-md $(LIBFOLDER)
+	-md bin
+	fpc $(COMPILERFLAGS) $(EXTRAFLAGS) sanguinetagupdater.pas
+endif
+
+ifdef ARCH_MAC
+sanguinetagupdater:
+	-md lib
+	-md $(LIBX64FOLDER)
+	-md $(LIBARMFOLDER)
+	-md bin
+ifndef NOINTEL
+	fpc $(COMPILERFLAGS) $(COMPILERFLAGSX64) $(EXTRAFLAGS) sanguinetagupdater.pas
+endif
+ifndef NOARM
+	fpc $(COMPILERFLAGS) $(COMPILERFLAGSARM) $(EXTRAFLAGS) sanguinetagupdater.pas
+endif
+ifndef NOFAT
+	cd bin
+	lipo -create -output sanguinetagupdater sanguinetagupdater_arm sanguinetagupdater_intel
+	strip sanguinetagupdater
+endif
+# MISSING!!! CODESIGN stuff!!!
+	@echo codesign should be here!
+endif
 
 clean:
 	-rm -r lib
