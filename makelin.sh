@@ -19,6 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Sanguine PJ Editor.
 # If not, see <http://www.gnu.org/licenses/>. 
+
 echo "Preparing to build Sanguine PJ Editor."
 echo "lazbuild must be present in your path!"
 echo "Building Sanguine Tag Updater"
