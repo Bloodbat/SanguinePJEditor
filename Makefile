@@ -72,7 +72,7 @@ sanguinetagupdater:
 	lazbuild --bm="$(PROJECT_FILE)" sanguinetagupdater.lpi
 	
 clean:
-	rm -r lib
+	-rm -r lib
 
 cleanall: clean
-	rm -r bin
+	-rm -r bin
