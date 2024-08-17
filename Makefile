@@ -74,5 +74,5 @@ sanguinetagupdater:
 clean:
 	rm -r lib
 
-cleanall:
+cleanall: clean
 	rm -r bin
