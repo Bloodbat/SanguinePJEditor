@@ -1,60 +1,173 @@
 object frmOptions: TfrmOptions
   Left = 545
-  Height = 165
+  Height = 208
   Top = 254
-  Width = 606
+  Width = 526
   Caption = 'Options'
-  ClientHeight = 165
-  ClientWidth = 606
+  ClientHeight = 208
+  ClientWidth = 526
+  Menu = MainMenu
   Position = poMainFormCenter
   LCLVersion = '3.5.0.0'
-  object btnOk: TBitBtn
-    Left = 520
-    Height = 30
-    Top = 121
-    Width = 75
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 8
-    DefaultCaption = True
-    Kind = bkOK
-    ModalResult = 1
+  object ToolBar: TToolBar
+    Left = 3
+    Height = 26
+    Top = 0
+    Width = 523
+    BorderSpacing.Left = 3
+    EdgeBorders = [ebTop, ebBottom]
+    Images = ImagesDataModule.ImageList1
     TabOrder = 0
+    object tbCopy: TToolButton
+      Left = 1
+      Top = 2
+      Action = EditCopy
+    end
+    object tbCut: TToolButton
+      Left = 24
+      Top = 2
+      Action = EditCut
+    end
+    object ToolButton2: TToolButton
+      Left = 47
+      Height = 22
+      Top = 2
+      Style = tbsSeparator
+    end
+    object tbPaste: TToolButton
+      Left = 55
+      Top = 2
+      Action = EditPaste
+    end
   end
-  object btnCancel: TBitBtn
-    Left = 432
-    Height = 30
-    Top = 121
-    Width = 75
-    Anchors = [akRight, akBottom]
-    BorderSpacing.Around = 8
-    Cancel = True
-    DefaultCaption = True
-    Kind = bkCancel
-    ModalResult = 2
+  object pnlControls: TPanel
+    Left = 0
+    Height = 46
+    Top = 162
+    Width = 526
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 46
+    ClientWidth = 526
     TabOrder = 1
+    object btnCancel: TBitBtn
+      Left = 352
+      Height = 30
+      Top = 4
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 8
+      Cancel = True
+      DefaultCaption = True
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 0
+    end
+    object btnOk: TBitBtn
+      Left = 440
+      Height = 30
+      Top = 4
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 8
+      DefaultCaption = True
+      Kind = bkOK
+      ModalResult = 1
+      TabOrder = 1
+    end
   end
-  object lbledDefaultAuthor: TLabeledEdit
-    Left = 8
-    Height = 23
-    Top = 32
-    Width = 590
-    Anchors = [akTop, akLeft, akRight]
-    EditLabel.Height = 15
-    EditLabel.Width = 590
-    EditLabel.Caption = 'Default Author'
-    LabelSpacing = 8
+  object scrlboxEditors: TScrollBox
+    Left = 0
+    Height = 128
+    Top = 26
+    Width = 526
+    HorzScrollBar.Increment = 9
+    HorzScrollBar.Page = 96
+    HorzScrollBar.Smooth = True
+    HorzScrollBar.Tracking = True
+    VertScrollBar.Increment = 11
+    VertScrollBar.Page = 119
+    VertScrollBar.Smooth = True
+    VertScrollBar.Tracking = True
+    Align = alClient
+    BorderSpacing.Bottom = 8
+    BorderStyle = bsNone
+    ClientHeight = 128
+    ClientWidth = 526
+    Constraints.MinHeight = 128
+    Constraints.MinWidth = 526
     TabOrder = 2
+    object lbledDefaultAuthor: TLabeledEdit
+      Left = 8
+      Height = 23
+      Top = 32
+      Width = 504
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 8
+      EditLabel.Height = 15
+      EditLabel.Width = 504
+      EditLabel.Caption = 'Default Author'
+      LabelSpacing = 8
+      TabOrder = 0
+    end
+    object lbledDefaultLicense: TLabeledEdit
+      Left = 8
+      Height = 23
+      Top = 88
+      Width = 504
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 8
+      EditLabel.Height = 15
+      EditLabel.Width = 504
+      EditLabel.Caption = 'Default License'
+      LabelSpacing = 8
+      TabOrder = 1
+    end
   end
-  object lbledDefaultLicense: TLabeledEdit
-    Left = 8
-    Height = 23
-    Top = 88
-    Width = 590
-    Anchors = [akTop, akLeft, akRight]
-    EditLabel.Height = 15
-    EditLabel.Width = 590
-    EditLabel.Caption = 'Default License'
-    LabelSpacing = 8
-    TabOrder = 3
+  object ActionList: TActionList
+    Images = ImagesDataModule.ImageList1
+    Left = 348
+    Top = 76
+    object EditCut: TEditCut
+      Category = 'Edit'
+      Caption = 'Cu&t'
+      Hint = 'Cut'
+      ImageIndex = 4
+      ShortCut = 16472
+    end
+    object EditCopy: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      Hint = 'Copy'
+      ImageIndex = 3
+      ShortCut = 16451
+    end
+    object EditPaste: TEditPaste
+      Category = 'Edit'
+      Caption = '&Paste'
+      Hint = 'Paste'
+      ImageIndex = 5
+      ShortCut = 16470
+    end
+  end
+  object MainMenu: TMainMenu
+    Images = ImagesDataModule.ImageList1
+    Left = 388
+    Top = 76
+    object mnuEdit: TMenuItem
+      Caption = '&Edit'
+      object mnuEditCopy: TMenuItem
+        Action = EditCopy
+      end
+      object mnuEditCut: TMenuItem
+        Action = EditCut
+      end
+      object Separator1: TMenuItem
+        Caption = '-'
+      end
+      object mnuEditPaste: TMenuItem
+        Action = EditPaste
+      end
+    end
   end
 end
