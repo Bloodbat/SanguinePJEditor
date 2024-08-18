@@ -15,6 +15,8 @@
       <UseXPManifest Value="True"/>
       <XPManifest>
         <DpiAware Value="True"/>
+        <TextName Value="LaSerpienteYLaRosaProducciones.PJEditor.PJEditor"/>
+        <TextDesc Value="An editor for VCV Rack&apos;s plugin.json manifests."/>
       </XPManifest>
       <Icon Value="0"/>
     </General>
@@ -316,6 +318,7 @@
         <Filename Value="src\formoptions.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmOptions"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="FormOptions"/>
       </Unit>
@@ -360,17 +363,4 @@
       </Options>
     </Linking>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions>
-      <Item>
-        <Name Value="EAbort"/>
-      </Item>
-      <Item>
-        <Name Value="ECodetoolError"/>
-      </Item>
-      <Item>
-        <Name Value="EFOpenError"/>
-      </Item>
-    </Exceptions>
-  </Debugging>
 </CONFIG>
