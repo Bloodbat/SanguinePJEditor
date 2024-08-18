@@ -36,22 +36,24 @@ type
 
   TfrmAbout = class(TForm)
     bvlGPL: TBevel;
-    bvlMonsters: TBevel;
-    bvlProductions: TBevel;
     bvlLazarus: TBevel;
-    bvlZDE: TBevel;
+    bvlMonsters: TBevel;
     bvlMutants: TBevel;
-    imgLSRP: TImage;
-    imgMonsters: TImage;
-    imgZDE: TImage;
+    bvlProductions: TBevel;
+    bvlZDE: TBevel;
     imgGPL: TImage;
     imgLaz: TImage;
+    imgLSRP: TImage;
+    imgMonsters: TImage;
     imgMutants: TImage;
-    lblZDE: TLabel;
+    imgProgram: TImage;
     lblBuildDate: TLabel;
     lblFPCVer: TLabel;
     lblLazVer: TLabel;
+    lblProgramName: TLabel;
     memoAboutText: TMemo;
+    pnlBottom: TPanel;
+    pnlTop: TPanel;
     procedure FormShow(Sender: TObject);
     procedure HandleSiteClicks(Sender: TObject);
   end;
@@ -80,7 +82,7 @@ uses
 
 procedure TfrmAbout.FormShow(Sender: TObject);
 const
-  ZDEImageDist = 10;
+  ProgramImageDistance = 10;
   sAboutBloodbatCredit = 'Bloodbat / La Serpiente y la Rosa Producciones.';
   sAboutProgVer = '%s %s';
 var
@@ -92,11 +94,11 @@ begin
   lblFPCVer.Caption := Format(rsAboutFPCVer, [FPC_VERSION, FPC_RELEASE, FPC_PATCH]);
   lblFPCVer.Left := ClientRect.CenterPoint.X - (lblFPCVer.Width div 2);
   lblLazVer.Caption := Format(rsAboutLazVer, [lcl_version]);
-  lblLazVer.Left := memoAboutText.Width + memoAboutText.Left - lblLazVer.Width;
-  lblZDE.Caption := Format(sAboutProgVer, [StrProgramName, GetProgramVersion]);
-  lblZDE.Left := ClientRect.CenterPoint.X - (lblZDE.Width div 2);
-  imgZDE.Left := lblZDE.Left - imgZDE.Width - ZDEImageDist;
-  bvlZDE.Left := imgZDE.Left - 2;
+  lblLazVer.Left := Width - lblLazVer.Width - 8;
+  lblProgramName.Caption := Format(sAboutProgVer, [StrProgramName, GetProgramVersion]);
+  lblProgramName.Left := ClientRect.CenterPoint.X - (lblProgramName.Width div 2);
+  imgProgram.Left := lblProgramName.Left - imgProgram.Width - ProgramImageDistance;
+  bvlZDE.Left := imgProgram.Left - 2;
   memoAboutText.Lines.AddStrings(
     [Format(sAboutProgVer, [StrProgramName, GetProgramVersion]),
     EmptyStr, rsAboutCopyYear, rsAboutSerpienteyRosa, EmptyStr,
