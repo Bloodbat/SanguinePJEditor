@@ -1,0 +1,60 @@
+object frmOptions: TfrmOptions
+  Left = 545
+  Height = 165
+  Top = 254
+  Width = 606
+  Caption = 'Options'
+  ClientHeight = 165
+  ClientWidth = 606
+  Position = poMainFormCenter
+  LCLVersion = '3.5.0.0'
+  object btnOk: TBitBtn
+    Left = 520
+    Height = 30
+    Top = 121
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 8
+    DefaultCaption = True
+    Kind = bkOK
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object btnCancel: TBitBtn
+    Left = 432
+    Height = 30
+    Top = 121
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 8
+    Cancel = True
+    DefaultCaption = True
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object lbledDefaultAuthor: TLabeledEdit
+    Left = 8
+    Height = 23
+    Top = 32
+    Width = 590
+    Anchors = [akTop, akLeft, akRight]
+    EditLabel.Height = 15
+    EditLabel.Width = 590
+    EditLabel.Caption = 'Default Author'
+    LabelSpacing = 8
+    TabOrder = 2
+  end
+  object lbledDefaultLicense: TLabeledEdit
+    Left = 8
+    Height = 23
+    Top = 88
+    Width = 590
+    Anchors = [akTop, akLeft, akRight]
+    EditLabel.Height = 15
+    EditLabel.Width = 590
+    EditLabel.Caption = 'Default License'
+    LabelSpacing = 8
+    TabOrder = 3
+  end
+end

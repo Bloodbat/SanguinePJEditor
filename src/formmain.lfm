@@ -74,6 +74,18 @@ object frmMain: TfrmMain
       Caption = 'tbSeparator3'
       Style = tbsDivider
     end
+    object tbSeparator4: TToolButton
+      Left = 154
+      Height = 22
+      Top = 2
+      Caption = 'tbSeparator4'
+      Style = tbsDivider
+    end
+    object tbOptions: TToolButton
+      Left = 159
+      Top = 2
+      Action = ProgramOptions
+    end
   end
   object StatusBar: TStatusBar
     Left = 0
@@ -800,6 +812,12 @@ object frmMain: TfrmMain
         Action = EditPaste
       end
     end
+    object mnuProgram: TMenuItem
+      Caption = '&Program'
+      object mnuProgramOptions: TMenuItem
+        Action = ProgramOptions
+      end
+    end
     object mnuHelp: TMenuItem
       Caption = '&Help'
       object mnuHelpLicense: TMenuItem
@@ -937,6 +955,13 @@ object frmMain: TfrmMain
       ImageIndex = 1
       OnExecute = FileSafeOpenExecute
       ShortCut = 16463
+    end
+    object ProgramOptions: TAction
+      Category = 'Program'
+      Caption = '&Options ...'
+      Hint = 'Open the program options dialog.'
+      ImageIndex = 11
+      OnExecute = ProgramOptionsExecute
     end
   end
   object OpenDialog: TOpenDialog

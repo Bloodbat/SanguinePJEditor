@@ -312,6 +312,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="BatJSONConf"/>
       </Unit>
+      <Unit>
+        <Filename Value="src\formoptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmOptions"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FormOptions"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

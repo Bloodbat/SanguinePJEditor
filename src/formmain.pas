@@ -36,6 +36,9 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    mnuProgramOptions: TMenuItem;
+    mnuProgram: TMenuItem;
+    ProgramOptions: TAction;
     FileSafeOpen: TAction;
     btnAcceptPluginChanges: TBitBtn;
     btnAcceptPluginChanges1: TBitBtn;
@@ -128,6 +131,8 @@ type
     tbSaveAs: TToolButton;
     tbSeparator1: TToolButton;
     tbSeparator3: TToolButton;
+    tbSeparator4: TToolButton;
+    tbOptions: TToolButton;
     procedure FileNewExecute(Sender: TObject);
     procedure FileSafeOpenExecute(Sender: TObject);
     procedure FileSaveAsAccept(Sender: TObject);
@@ -146,6 +151,7 @@ type
     procedure ModuleRemoveExecute(Sender: TObject);
     procedure PluginAcceptChangesExecute(Sender: TObject);
     procedure PluginDiscardChangesExecute(Sender: TObject);
+    procedure ProgramOptionsExecute(Sender: TObject);
     procedure strgrdModulesAfterSelection(Sender: TObject; aCol, aRow: integer);
     procedure strgrdModulesColRowDeleted(Sender: TObject; IsColumn: boolean;
       sIndex, tIndex: integer);
@@ -154,6 +160,8 @@ type
   private
     FNoNameCount: integer;
     FConfigFileName: string;
+    FDefaultAuthor: string;
+    FDefaultLicense: string;
     FFileName: string;
     FModified: boolean;
     FRoot: TJSONObject;
@@ -193,7 +201,7 @@ implementation
 
 uses
   Variants, ModuleTagging, LCLIntf, FormAbout, PJStrings, GUITools,
-  FormNewPlugin, SanguineJSONReader, FormNewModule, BatJSONConf, LCLType;
+  FormNewPlugin, SanguineJSONReader, FormNewModule, BatJSONConf, LCLType, FormOptions;
 
   {$R *.lfm}
 
@@ -215,6 +223,8 @@ const
   sConfigWindowState = 'wndstate';
   sConfigModuleListWidth = 'modulelistwidth';
   sConfigTagsHeight = 'tagsheight';
+  sConfigDefaultAuthor = 'defaultauthor';
+  sConfigDefaultLicense = 'defaultlicense';
 
   cAsterisk = '*';
 
@@ -243,6 +253,8 @@ begin
   begin
     frmNewPlugin := TfrmNewPlugin.Create(nil);
     try
+      frmNewPlugin.lbledPluginAuthor.Text := FDefaultAuthor;
+      frmNewPlugin.lbledPluginLicense.Text := FDefaultLicense;
       if frmNewPlugin.ShowModal = mrOk then
       begin
         FreeObjects;
@@ -548,6 +560,24 @@ begin
   FillPluginData;
 end;
 
+procedure TfrmMain.ProgramOptionsExecute(Sender: TObject);
+var
+  frmOptions: TfrmOptions;
+begin
+  frmOptions := TfrmOptions.Create(nil);
+  try
+    frmOptions.lbledDefaultAuthor.Text := FDefaultAuthor;
+    frmOptions.lbledDefaultLicense.Text := FDefaultLicense;
+    if frmOptions.ShowModal = mrOk then
+    begin
+      FDefaultAuthor := frmOptions.lbledDefaultAuthor.Text;
+      FDefaultLicense := frmOptions.lbledDefaultLicense.Text;
+    end;
+  finally
+    frmOptions.Free;
+  end;
+end;
+
 procedure TfrmMain.strgrdModulesAfterSelection(Sender: TObject; aCol, aRow: integer);
 begin
   ClearModuleInfo;
@@ -788,6 +818,8 @@ begin
       pnlModuleList.Width);
     scrlboxModuleTags.Height :=
       ConfigFile.GetValue(sConfigTagsHeight, scrlboxModuleTags.Height);
+    FDefaultAuthor := UTF8Encode(ConfigFile.GetValue(sConfigDefaultAuthor, EmptyStr));
+    FDefaultLicense := UTF8Encode(ConfigFile.GetValue(sConfigDefaultLicense, EmptyStr));
   finally
     ConfigFile.Free;
   end;
@@ -806,6 +838,8 @@ begin
     ConfigFile.SetValue(sConfigWindowState, Ord(WindowState));
     ConfigFile.SetValue(sConfigModuleListWidth, pnlModuleList.Width);
     ConfigFile.SetValue(sConfigTagsHeight, scrlboxModuleTags.Height);
+    ConfigFile.SetValue(sConfigDefaultAuthor, FDefaultAuthor);
+    ConfigFile.SetValue(sConfigDefaultLicense, FDefaultLicense);
 
     ConfigFile.Filename := FConfigFileName;
     ConfigFile.Flush;
