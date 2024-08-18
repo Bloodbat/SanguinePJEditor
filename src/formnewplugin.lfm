@@ -15,20 +15,20 @@ object frmNewPlugin: TfrmNewPlugin
   LCLVersion = '3.5.0.0'
   object pnlControls: TPanel
     Left = 0
-    Height = 50
-    Top = 344
+    Height = 46
+    Top = 348
     Width = 658
     Align = alBottom
     BorderSpacing.Top = 8
     BevelOuter = bvNone
-    ClientHeight = 50
+    ClientHeight = 46
     ClientWidth = 658
     TabOrder = 2
     object btnOk: TBitBtn
       Left = 574
       Height = 30
       Hint = 'Accept new plugin basic manifest.'
-      Top = 8
+      Top = 4
       Width = 75
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 8
@@ -43,7 +43,7 @@ object frmNewPlugin: TfrmNewPlugin
       Left = 488
       Height = 30
       Hint = 'Cancel new plugin basic manifest.'
-      Top = 8
+      Top = 4
       Width = 75
       Anchors = [akRight, akBottom]
       BorderSpacing.Around = 8
@@ -56,14 +56,14 @@ object frmNewPlugin: TfrmNewPlugin
   end
   object scrlboxEditors: TScrollBox
     Left = 0
-    Height = 310
+    Height = 314
     Top = 26
     Width = 658
     HorzScrollBar.Page = 88
     VertScrollBar.Page = 279
     Align = alClient
     BorderStyle = bsNone
-    ClientHeight = 310
+    ClientHeight = 314
     ClientWidth = 658
     TabOrder = 1
     object lbledPluginSlug: TLabeledEdit
