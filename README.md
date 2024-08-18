@@ -1,6 +1,6 @@
 # Sanguine PJ Tools
 
-Tools for making editing and updating VCV Rack's plugin.json manifests easier.
+Tools for easier editing and updating of VCV Rack's plugin.json manifests.
 
 ## Tools
 
