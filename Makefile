@@ -61,7 +61,7 @@ COMPILERFLAGSX64 = -Px86_64 -CpCOREAVX -Fi$(LIBX64FOLDER) -FU$(LIBX64FOLDER) -ob
 COMPILERFLAGSARM = -Paarch64 -Fi$(LIBARMFOLDER) -FU$(LIBARMFOLDER) -obin/sanguinetagupdater_arm
 endif
 
-all: sanguinetagupdater
+all: sanguinetagupdater rackpjeditor
 
 ifndef ARCH_MAC
 sanguinetagupdater:
@@ -69,6 +69,12 @@ sanguinetagupdater:
 	-md $(LIBFOLDER)
 	-md bin
 	fpc $(COMPILERFLAGS) $(EXTRAFLAGS) sanguinetagupdater.pas
+
+rackpjeditor:
+	-md lib
+	-md $(LIBFOLDER)
+	-md bin
+	lazbuild --bm="Release Intel x64" pjeditor.lpi
 endif
 
 ifdef ARCH_MAC
@@ -87,6 +93,26 @@ ifndef NOFAT
 	cd bin
 	lipo -create -output sanguinetagupdater sanguinetagupdater_arm sanguinetagupdater_intel
 	strip sanguinetagupdater
+	cd ..
+endif
+# MISSING!!! CODESIGN stuff!!!
+	@echo codesign should be here!
+
+rackpjeditor:
+	-md lib
+	-md $(LIBX64FOLDER)
+	-md $(LIBARMFOLDER)
+	-md bin
+ifndef NOINTEL
+	lazbuild --bm="Release MacOS Intel" pjeditor.lpi
+endif
+ifndef NOARM
+	lazbuild --bm="Release MacOS ARM" pjeditor.lpi
+endif
+ifndef NOFAT
+	cd bin
+	lipo -create -output pjeditor pjeditor_arm pjeditor_intel
+	strip pjeditor
 endif
 # MISSING!!! CODESIGN stuff!!!
 	@echo codesign should be here!
