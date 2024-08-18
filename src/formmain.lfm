@@ -950,7 +950,7 @@ object frmMain: TfrmMain
     end
     object FileSafeOpen: TAction
       Category = 'File'
-      Caption = '&Open Manifest'
+      Caption = '&Open Manifest ...'
       Hint = 'Open an existing plugin manifest.'
       ImageIndex = 1
       OnExecute = FileSafeOpenExecute
