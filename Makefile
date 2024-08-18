@@ -51,7 +51,7 @@ endif
 
 ifdef ARCH_LIN
 LIBFOLDER = lib/x86_64-linux
-COMPILERFLAGS += -Cg -Fi$(LIBFOLDER) -FU$(LIBFOLDER) -Px86_64 -CpCOREAVX -obin\sanguinetagupdater
+COMPILERFLAGS += -Cg -Fi$(LIBFOLDER) -FU$(LIBFOLDER) -Px86_64 -CpCOREAVX -obin/sanguinetagupdater
 endif
 
 ifdef ARCH_MAC
