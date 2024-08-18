@@ -1,0 +1,950 @@
+object frmMain: TfrmMain
+  Left = 525
+  Height = 600
+  Top = 167
+  Width = 760
+  Caption = 'Sanguine PJ Editor'
+  ClientHeight = 600
+  ClientWidth = 760
+  Constraints.MinHeight = 600
+  Constraints.MinWidth = 600
+  Menu = MainMenu
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poDefault
+  ShowHint = True
+  LCLVersion = '3.5.0.0'
+  object ToolBarCommon: TToolBar
+    Left = 3
+    Height = 26
+    Top = 0
+    Width = 757
+    BorderSpacing.Left = 3
+    EdgeBorders = [ebTop, ebBottom]
+    Images = ImagesDataModule.ImageList1
+    TabOrder = 0
+    object tbOpen: TToolButton
+      Left = 29
+      Top = 2
+      Action = FileSafeOpen
+    end
+    object tbCopy: TToolButton
+      Left = 80
+      Top = 2
+      Action = EditCopy
+    end
+    object tbCut: TToolButton
+      Left = 103
+      Top = 2
+      Action = EditCut
+    end
+    object tbSeparator2: TToolButton
+      Left = 126
+      Height = 22
+      Top = 2
+      Style = tbsDivider
+    end
+    object tbPaste: TToolButton
+      Left = 131
+      Top = 2
+      Action = EditPaste
+    end
+    object tbNew: TToolButton
+      Left = 1
+      Top = 2
+      Action = FileNew
+    end
+    object tbSaveAs: TToolButton
+      Left = 52
+      Top = 2
+      Action = FileSaveAs
+    end
+    object tbSeparator1: TToolButton
+      Left = 75
+      Height = 22
+      Top = 2
+      Caption = 'tbSeparator1'
+      Style = tbsDivider
+    end
+    object tbSeparator3: TToolButton
+      Left = 24
+      Height = 22
+      Top = 2
+      Caption = 'tbSeparator3'
+      Style = tbsDivider
+    end
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 577
+    Width = 760
+    Panels = <    
+      item
+        Width = 300
+      end    
+      item
+        Alignment = taCenter
+        Width = 30
+      end    
+      item
+        Alignment = taRightJustify
+        Width = 50
+      end>
+    SimplePanel = False
+    SizeGrip = False
+  end
+  object pgctrlPlugin: TPageControl
+    Left = 0
+    Height = 551
+    Top = 26
+    Width = 760
+    ActivePage = tabPlugin
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 2
+    object tabPlugin: TTabSheet
+      Caption = 'Plugin'
+      ClientHeight = 523
+      ClientWidth = 752
+      object scrlboxPlugin: TScrollBox
+        Left = 0
+        Height = 461
+        Top = 8
+        Width = 752
+        HorzScrollBar.Page = 88
+        HorzScrollBar.Smooth = True
+        HorzScrollBar.Tracking = True
+        VertScrollBar.Increment = 46
+        VertScrollBar.Page = 461
+        VertScrollBar.Smooth = True
+        VertScrollBar.Tracking = True
+        Align = alClient
+        BorderSpacing.Top = 8
+        BorderSpacing.Bottom = 8
+        BorderStyle = bsNone
+        ClientHeight = 461
+        ClientWidth = 735
+        TabOrder = 0
+        object lbledPluginSlug: TLabeledEdit
+          Left = 8
+          Height = 23
+          Top = 24
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          BorderSpacing.Right = 8
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Slug'
+          LabelSpacing = 8
+          TabOrder = 0
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginName: TLabeledEdit
+          Tag = 1
+          Left = 8
+          Height = 23
+          Top = 80
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          BorderSpacing.Right = 8
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Name'
+          LabelSpacing = 8
+          TabOrder = 1
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginVersion: TLabeledEdit
+          Tag = 5
+          Left = 8
+          Height = 23
+          Top = 192
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Version'
+          LabelSpacing = 8
+          TabOrder = 3
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginLicense: TLabeledEdit
+          Tag = 7
+          Left = 8
+          Height = 23
+          Top = 304
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'License'
+          LabelSpacing = 8
+          TabOrder = 5
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginBrand: TLabeledEdit
+          Tag = 16
+          Left = 8
+          Height = 23
+          Top = 808
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Brand'
+          LabelSpacing = 8
+          TabOrder = 14
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginDescription: TLabeledEdit
+          Tag = 6
+          Left = 8
+          Height = 23
+          Top = 248
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Description'
+          LabelSpacing = 8
+          TabOrder = 4
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginAuthor: TLabeledEdit
+          Tag = 4
+          Left = 8
+          Height = 23
+          Top = 136
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Author'
+          LabelSpacing = 8
+          TabOrder = 2
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginAuthorEmail: TLabeledEdit
+          Tag = 8
+          Left = 8
+          Height = 23
+          Top = 360
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Author Email'
+          LabelSpacing = 8
+          TabOrder = 6
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginAuthorURL: TLabeledEdit
+          Tag = 9
+          Left = 8
+          Height = 23
+          Top = 416
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Author URL'
+          LabelSpacing = 8
+          TabOrder = 7
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginURL: TLabeledEdit
+          Tag = 10
+          Left = 8
+          Height = 23
+          Top = 472
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Plugin URL'
+          LabelSpacing = 8
+          TabOrder = 8
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginManualURL: TLabeledEdit
+          Tag = 11
+          Left = 8
+          Height = 23
+          Top = 528
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Manual URL'
+          LabelSpacing = 8
+          TabOrder = 9
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginSourceURL: TLabeledEdit
+          Tag = 12
+          Left = 8
+          Height = 23
+          Top = 584
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Source URL'
+          LabelSpacing = 8
+          TabOrder = 10
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginChangelogURL: TLabeledEdit
+          Tag = 13
+          Left = 8
+          Height = 23
+          Top = 640
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Changelog URL'
+          LabelSpacing = 8
+          TabOrder = 11
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginDonateURL: TLabeledEdit
+          Tag = 14
+          Left = 8
+          Height = 23
+          Top = 696
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Donate URL'
+          LabelSpacing = 8
+          TabOrder = 12
+          OnChange = HandlePluginEditorsChange
+        end
+        object lbledPluginMinRackVersion: TLabeledEdit
+          Tag = 15
+          Left = 8
+          Height = 23
+          Top = 752
+          Width = 720
+          Anchors = [akTop, akLeft, akRight]
+          AutoSize = False
+          EditLabel.Height = 15
+          EditLabel.Width = 720
+          EditLabel.Caption = 'Min. Rack Version'
+          LabelSpacing = 8
+          TabOrder = 13
+          OnChange = HandlePluginEditorsChange
+        end
+      end
+      object pnlPluginDataControls: TPanel
+        Left = 0
+        Height = 46
+        Top = 477
+        Width = 752
+        Align = alBottom
+        BorderSpacing.Top = 8
+        BevelOuter = bvNone
+        ClientHeight = 46
+        ClientWidth = 752
+        TabOrder = 1
+        object btnAcceptPluginChanges: TBitBtn
+          Left = 656
+          Height = 30
+          Top = 8
+          Width = 88
+          Action = PluginAcceptChanges
+          Anchors = [akRight, akBottom]
+          BorderSpacing.Around = 8
+          Images = ImagesDataModule.ImageList1
+          ImageIndex = 9
+          TabOrder = 0
+        end
+        object btnCancelPluginChanges: TBitBtn
+          Left = 560
+          Height = 30
+          Top = 8
+          Width = 88
+          Action = PluginDiscardChanges
+          Anchors = [akRight, akBottom]
+          BorderSpacing.Around = 8
+          Images = ImagesDataModule.ImageList1
+          ImageIndex = 10
+          TabOrder = 1
+        end
+      end
+    end
+    object tabModules: TTabSheet
+      Caption = 'Modules'
+      ClientHeight = 523
+      ClientWidth = 752
+      object pnlModuleList: TPanel
+        Left = 0
+        Height = 523
+        Top = 0
+        Width = 192
+        Align = alLeft
+        BevelOuter = bvNone
+        ClientHeight = 523
+        ClientWidth = 192
+        TabOrder = 0
+        object tbarModuleList: TToolBar
+          Left = 0
+          Height = 26
+          Top = 0
+          Width = 192
+          Caption = 'tbarModuleList'
+          EdgeBorders = [ebTop, ebBottom]
+          Images = ImagesDataModule.ImageList1
+          TabOrder = 0
+          object tbAddModule: TToolButton
+            Left = 1
+            Top = 2
+            Action = ModuleAdd
+          end
+          object tbRemoveModule: TToolButton
+            Left = 24
+            Top = 2
+            Action = ModuleRemove
+          end
+        end
+        object strgrdModules: TStringGrid
+          Left = 0
+          Height = 497
+          Top = 26
+          Width = 184
+          Align = alClient
+          AlternateColor = clDefault
+          AutoEdit = False
+          AutoFillColumns = True
+          BorderSpacing.Right = 8
+          BorderStyle = bsNone
+          ColCount = 2
+          Columns = <          
+            item
+              ReadOnly = True
+              Title.Caption = 'Slug'
+              Width = 134
+            end          
+            item
+              ButtonStyle = cbsCheckboxColumn
+              MaxSize = 50
+              Title.Alignment = taCenter
+              Title.Caption = 'Hidden'
+              Width = 50
+            end>
+          FixedCols = 0
+          MouseWheelOption = mwGrid
+          Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goEditing, goRowSelect, goAlwaysShowEditor, goThumbTracking, goSmoothScroll]
+          RowCount = 1
+          TabOrder = 1
+          TitleStyle = tsNative
+          UseXORFeatures = True
+          OnAfterSelection = strgrdModulesAfterSelection
+          OnColRowDeleted = strgrdModulesColRowDeleted
+          ColWidths = (
+            134
+            50
+          )
+        end
+      end
+      object Splitter1: TSplitter
+        Left = 192
+        Height = 523
+        Top = 0
+        Width = 5
+      end
+      object pnlModule: TPanel
+        Left = 197
+        Height = 523
+        Top = 0
+        Width = 555
+        Align = alClient
+        BevelOuter = bvNone
+        ClientHeight = 523
+        ClientWidth = 555
+        TabOrder = 2
+        object pnlModuleDataControls: TPanel
+          Left = 0
+          Height = 46
+          Top = 477
+          Width = 555
+          Align = alBottom
+          BorderSpacing.Top = 8
+          BevelOuter = bvNone
+          ClientHeight = 46
+          ClientWidth = 555
+          TabOrder = 0
+          object btnAcceptPluginChanges1: TBitBtn
+            Left = 459
+            Height = 30
+            Top = 8
+            Width = 88
+            Action = ModuleAcceptChanges
+            Anchors = [akRight, akBottom]
+            BorderSpacing.Around = 8
+            Images = ImagesDataModule.ImageList1
+            ImageIndex = 9
+            TabOrder = 0
+          end
+          object btnCancelPluginChanges1: TBitBtn
+            Left = 363
+            Height = 30
+            Top = 8
+            Width = 88
+            Action = ModuleDiscardChanges
+            Anchors = [akRight, akBottom]
+            BorderSpacing.Around = 8
+            Images = ImagesDataModule.ImageList1
+            ImageIndex = 10
+            TabOrder = 1
+          end
+        end
+        object pnlModuleData: TPanel
+          Left = 0
+          Height = 469
+          Top = 0
+          Width = 555
+          Align = alClient
+          BevelOuter = bvNone
+          ClientHeight = 469
+          ClientWidth = 555
+          TabOrder = 1
+          object scrlboxModuleInfo: TScrollBox
+            Left = 0
+            Height = 339
+            Top = 0
+            Width = 555
+            HorzScrollBar.Smooth = True
+            HorzScrollBar.Tracking = True
+            VertScrollBar.Increment = 33
+            VertScrollBar.Page = 335
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
+            Align = alClient
+            BorderSpacing.Bottom = 8
+            BorderStyle = bsNone
+            ClientHeight = 339
+            ClientWidth = 555
+            TabOrder = 0
+            object lbledModuleSlug: TLabeledEdit
+              Left = 8
+              Height = 23
+              Top = 32
+              Width = 536
+              Anchors = [akTop, akLeft, akRight]
+              AutoSize = False
+              EditLabel.Height = 15
+              EditLabel.Width = 536
+              EditLabel.Caption = 'Slug'
+              LabelSpacing = 8
+              TabOrder = 0
+              OnChange = HandleModuleEditorsChange
+            end
+            object lbledModuleName: TLabeledEdit
+              Tag = 1
+              Left = 8
+              Height = 23
+              Top = 88
+              Width = 536
+              Anchors = [akTop, akLeft, akRight]
+              AutoSize = False
+              EditLabel.Height = 15
+              EditLabel.Width = 536
+              EditLabel.Caption = 'Name'
+              LabelSpacing = 8
+              TabOrder = 1
+              OnChange = HandleModuleEditorsChange
+            end
+            object lbledModuleDescription: TLabeledEdit
+              Tag = 6
+              Left = 8
+              Height = 23
+              Top = 144
+              Width = 536
+              Anchors = [akTop, akLeft, akRight]
+              AutoSize = False
+              EditLabel.Height = 15
+              EditLabel.Width = 536
+              EditLabel.Caption = 'Description'
+              LabelSpacing = 8
+              TabOrder = 2
+              OnChange = HandleModuleEditorsChange
+            end
+            object lbledModuleKeywords: TLabeledEdit
+              Tag = 17
+              Left = 8
+              Height = 23
+              Top = 200
+              Width = 536
+              Anchors = [akTop, akLeft, akRight]
+              AutoSize = False
+              EditLabel.Height = 15
+              EditLabel.Width = 536
+              EditLabel.Caption = 'Keywords'
+              LabelSpacing = 8
+              TabOrder = 3
+              OnChange = HandleModuleEditorsChange
+            end
+            object lbledModuleManualURL: TLabeledEdit
+              Tag = 11
+              Left = 8
+              Height = 23
+              Top = 256
+              Width = 536
+              Anchors = [akTop, akLeft, akRight]
+              AutoSize = False
+              EditLabel.Height = 15
+              EditLabel.Width = 536
+              EditLabel.Caption = 'Manual URL'
+              LabelSpacing = 8
+              TabOrder = 4
+              OnChange = HandleModuleEditorsChange
+            end
+            object lbledModuleModularGridURL: TLabeledEdit
+              Tag = 18
+              Left = 8
+              Height = 23
+              Top = 312
+              Width = 536
+              Anchors = [akTop, akLeft, akRight]
+              AutoSize = False
+              EditLabel.Height = 15
+              EditLabel.Width = 536
+              EditLabel.Caption = 'Modular Grid URL'
+              LabelSpacing = 8
+              TabOrder = 5
+              OnChange = HandleModuleEditorsChange
+            end
+          end
+          object scrlboxModuleTags: TScrollBox
+            Left = 0
+            Height = 109
+            Top = 360
+            Width = 555
+            HorzScrollBar.Increment = 47
+            HorzScrollBar.Page = 471
+            HorzScrollBar.Smooth = True
+            HorzScrollBar.Tracking = True
+            VertScrollBar.Increment = 10
+            VertScrollBar.Page = 109
+            VertScrollBar.Smooth = True
+            VertScrollBar.Tracking = True
+            Align = alBottom
+            BorderSpacing.Top = 8
+            BorderStyle = bsNone
+            ClientHeight = 109
+            ClientWidth = 538
+            TabOrder = 1
+            object chkgrpTags: TCheckGroup
+              Left = 8
+              Height = 537
+              Top = 0
+              Width = 522
+              Align = alClient
+              AutoFill = True
+              AutoSize = True
+              BorderSpacing.Left = 8
+              BorderSpacing.Right = 8
+              BorderSpacing.Bottom = 8
+              Caption = 'Tags'
+              ChildSizing.LeftRightSpacing = 6
+              ChildSizing.TopBottomSpacing = 6
+              ChildSizing.HorizontalSpacing = 8
+              ChildSizing.VerticalSpacing = 8
+              ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+              ChildSizing.EnlargeVertical = crsHomogenousChildResize
+              ChildSizing.ShrinkHorizontal = crsScaleChilds
+              ChildSizing.ShrinkVertical = crsScaleChilds
+              ChildSizing.Layout = cclLeftToRightThenTopToBottom
+              ChildSizing.ControlsPerLine = 3
+              ClientHeight = 517
+              ClientWidth = 518
+              Columns = 3
+              Items.Strings = (
+                'Arpeggiator'
+                'Attenuator'
+                'Blank'
+                'Chorus'
+                'Clock generator'
+                'Clock modulator'
+                'Compressor'
+                'Controller'
+                'Delay'
+                'Digital'
+                'Distortion'
+                'Drum'
+                'Dual'
+                'Dynamics'
+                'Effect'
+                'Envelope follower'
+                'Envelope generator'
+                'Equalizer'
+                'Expander'
+                'External'
+                'Filter'
+                'Flanger'
+                'Function generator'
+                'Granular'
+                'Hardware clone'
+                'Limiter'
+                'Logic'
+                'Low-frequency oscillator'
+                'Low-pass gate'
+                'MIDI'
+                'Mixer'
+                'Multiple'
+                'Noise'
+                'Oscillator'
+                'Panning'
+                'Phaser'
+                'Physical modeling'
+                'Polyphonic'
+                'Quad'
+                'Quantizer'
+                'Random'
+                'Recording'
+                'Reverb'
+                'Ring modulator'
+                'Sample and hold'
+                'Sampler'
+                'Sequencer'
+                'Slew limiter'
+                'Speech'
+                'Switch'
+                'Synth voice'
+                'Tuner'
+                'Utility'
+                'Visual'
+                'Vocoder'
+                'Voltage-controlled amplifier'
+                'Waveshaper'
+              )
+              TabOrder = 0
+              Data = {
+                3900000002020202020202020202020202020202020202020202020202020202
+                0202020202020202020202020202020202020202020202020202020202
+              }
+            end
+          end
+          object Splitter2: TSplitter
+            Cursor = crVSplit
+            Left = 0
+            Height = 5
+            Top = 347
+            Width = 555
+            Align = alBottom
+            ResizeAnchor = akBottom
+          end
+        end
+      end
+    end
+  end
+  object MainMenu: TMainMenu
+    Images = ImagesDataModule.ImageList1
+    Left = 344
+    Top = 184
+    object mnuFile: TMenuItem
+      Caption = '&File'
+      object mnuFileNew: TMenuItem
+        Action = FileNew
+      end
+      object Separator4: TMenuItem
+        Caption = '-'
+      end
+      object mnuFileOpen: TMenuItem
+        Action = FileSafeOpen
+      end
+      object Separator6: TMenuItem
+        Caption = '-'
+      end
+      object mnuFileSaveAs: TMenuItem
+        Action = FileSaveAs
+      end
+      object Separator2: TMenuItem
+        Caption = '-'
+      end
+      object mnuFileExit: TMenuItem
+        Action = FileExit
+      end
+    end
+    object mnuEdit: TMenuItem
+      Caption = '&Edit'
+      object mnuEditCopy: TMenuItem
+        Action = EditCopy
+      end
+      object mnuEditCut: TMenuItem
+        Action = EditCut
+      end
+      object Separator1: TMenuItem
+        Caption = '-'
+      end
+      object mnuEditPaste: TMenuItem
+        Action = EditPaste
+      end
+    end
+    object mnuHelp: TMenuItem
+      Caption = '&Help'
+      object mnuHelpLicense: TMenuItem
+        Action = HelpOpenLicense
+      end
+      object Separator5: TMenuItem
+        Caption = '-'
+      end
+      object mnuHelpManifestManual: TMenuItem
+        Action = HelpOpenManifestManual
+      end
+      object Separator3: TMenuItem
+        Caption = '-'
+      end
+      object mnuHelpAbout: TMenuItem
+        Action = HelpOpenAbout
+      end
+    end
+  end
+  object ActionList: TActionList
+    Images = ImagesDataModule.ImageList1
+    Left = 304
+    Top = 184
+    object FileExit: TFileExit
+      Category = 'File'
+      Caption = 'E&xit'
+      Hint = 'Exit the program.'
+      ImageIndex = 0
+    end
+    object EditCut: TEditCut
+      Category = 'Edit'
+      Caption = 'Cu&t'
+      Hint = 'Cut'
+      ImageIndex = 4
+      ShortCut = 16472
+    end
+    object EditCopy: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      Hint = 'Copy'
+      ImageIndex = 3
+      ShortCut = 16451
+    end
+    object EditPaste: TEditPaste
+      Category = 'Edit'
+      Caption = '&Paste'
+      Hint = 'Paste'
+      ImageIndex = 5
+      ShortCut = 16470
+    end
+    object HelpOpenLicense: TAction
+      Category = 'Help'
+      Caption = '&License'
+      OnExecute = HelpOpenLicenseExecute
+    end
+    object HelpOpenAbout: TAction
+      Category = 'Help'
+      Caption = '&About ...'
+      OnExecute = HelpOpenAboutExecute
+    end
+    object ModuleAdd: TAction
+      Category = 'Module'
+      Caption = '&Add ...'
+      Hint = 'Add a new module.'
+      ImageIndex = 7
+      OnExecute = ModuleAddExecute
+    end
+    object ModuleRemove: TAction
+      Category = 'Module'
+      Caption = '&Remove'
+      Enabled = False
+      Hint = 'Remove selected module.'
+      ImageIndex = 8
+      OnExecute = ModuleRemoveExecute
+    end
+    object PluginAcceptChanges: TAction
+      Category = 'Plugin'
+      Caption = '&Commit'
+      Enabled = False
+      Hint = 'Apply plugin changes to manifest.'
+      ImageIndex = 9
+      OnExecute = PluginAcceptChangesExecute
+    end
+    object PluginDiscardChanges: TAction
+      Category = 'Plugin'
+      Caption = '&Discard'
+      Hint = 'Undo latest plugin changes.'
+      ImageIndex = 10
+      OnExecute = PluginDiscardChangesExecute
+    end
+    object ModuleAcceptChanges: TAction
+      Category = 'Module'
+      Caption = '&Commit'
+      Enabled = False
+      Hint = 'Apply current module changes to manifest.'
+      ImageIndex = 9
+      OnExecute = ModuleAcceptChangesExecute
+    end
+    object ModuleDiscardChanges: TAction
+      Category = 'Module'
+      Caption = '&Discard'
+      Hint = 'Undo latest module changes.'
+      ImageIndex = 10
+      OnExecute = ModuleDiscardChangesExecute
+    end
+    object FileNew: TAction
+      Category = 'File'
+      Caption = '&New ...'
+      Hint = 'Create a new plugin manifest.'
+      ImageIndex = 6
+      OnExecute = FileNewExecute
+    end
+    object HelpOpenManifestManual: TAction
+      Category = 'Help'
+      Caption = '&Manifest Manual'
+      OnExecute = HelpOpenManifestManualExecute
+    end
+    object FileSaveAs: TFileSaveAs
+      Category = 'File'
+      Caption = 'Save &As ...'
+      Dialog.Title = 'Save Manifest As'
+      Dialog.DefaultExt = '.json'
+      Dialog.Filter = 'Rack Plugin Manifest|plugin.json|All Files|*.*'
+      Dialog.Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+      Enabled = False
+      Hint = 'Save Manifest as.'
+      ImageIndex = 2
+      BeforeExecute = FileSaveAsBeforeExecute
+      OnAccept = FileSaveAsAccept
+    end
+    object FileSafeOpen: TAction
+      Category = 'File'
+      Caption = '&Open Manifest'
+      Hint = 'Open an existing plugin manifest.'
+      ImageIndex = 1
+      OnExecute = FileSafeOpenExecute
+      ShortCut = 16463
+    end
+  end
+  object OpenDialog: TOpenDialog
+    Title = 'Open Plugin Manifest'
+    DefaultExt = '.json'
+    Filter = 'Rack Plugin Manifest|plugin.json|All Files|*.*'
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Left = 384
+    Top = 184
+  end
+end

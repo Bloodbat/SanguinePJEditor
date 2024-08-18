@@ -1,0 +1,174 @@
+object frmNewModule: TfrmNewModule
+  Left = 508
+  Height = 221
+  Top = 249
+  Width = 658
+  Caption = 'Enter Basic Module Data (All Fields Required)'
+  ClientHeight = 221
+  ClientWidth = 658
+  Constraints.MinHeight = 221
+  Constraints.MinWidth = 658
+  Menu = MainMenu
+  OnShow = FormShow
+  Position = poMainFormCenter
+  ShowHint = True
+  LCLVersion = '3.5.0.0'
+  object pnlControls: TPanel
+    Left = 0
+    Height = 50
+    Top = 171
+    Width = 658
+    Align = alBottom
+    BorderSpacing.Top = 8
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 658
+    TabOrder = 2
+    object btnOk: TBitBtn
+      Left = 574
+      Height = 30
+      Hint = 'Accept new plugin basic manifest.'
+      Top = 8
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 8
+      Default = True
+      DefaultCaption = True
+      Enabled = False
+      Kind = bkOK
+      ModalResult = 1
+      TabOrder = 1
+    end
+    object btnCancel: TBitBtn
+      Left = 488
+      Height = 30
+      Hint = 'Cancel new plugin basic manifest.'
+      Top = 8
+      Width = 75
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Around = 8
+      Cancel = True
+      DefaultCaption = True
+      Kind = bkCancel
+      ModalResult = 2
+      TabOrder = 0
+    end
+  end
+  object scrlboxEditors: TScrollBox
+    Left = 0
+    Height = 137
+    Top = 26
+    Width = 658
+    VertScrollBar.Page = 111
+    Align = alClient
+    BorderStyle = bsNone
+    ClientHeight = 137
+    ClientWidth = 658
+    TabOrder = 1
+    object lbledModuleName: TLabeledEdit
+      Left = 8
+      Height = 23
+      Top = 88
+      Width = 641
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = False
+      EditLabel.Height = 15
+      EditLabel.Width = 641
+      EditLabel.Caption = 'Name'
+      LabelSpacing = 8
+      TabOrder = 1
+      OnChange = HandleEditorsChange
+    end
+    object lbledModuleSlug: TLabeledEdit
+      Left = 8
+      Height = 23
+      Top = 32
+      Width = 641
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = False
+      EditLabel.Height = 15
+      EditLabel.Width = 641
+      EditLabel.Caption = 'Slug'
+      LabelSpacing = 8
+      TabOrder = 0
+      OnChange = HandleEditorsChange
+    end
+  end
+  object ToolBar: TToolBar
+    Left = 3
+    Height = 26
+    Top = 0
+    Width = 655
+    BorderSpacing.Left = 3
+    EdgeBorders = [ebTop, ebBottom]
+    Images = ImagesDataModule.ImageList1
+    TabOrder = 0
+    object tbCopy: TToolButton
+      Left = 1
+      Top = 2
+      Action = EditCopy
+    end
+    object tbCut: TToolButton
+      Left = 24
+      Top = 2
+      Action = EditCut
+    end
+    object ToolButton2: TToolButton
+      Left = 47
+      Height = 22
+      Top = 2
+      Style = tbsSeparator
+    end
+    object tbPaste: TToolButton
+      Left = 55
+      Top = 2
+      Action = EditPaste
+    end
+  end
+  object ActionList: TActionList
+    Images = ImagesDataModule.ImageList1
+    Left = 320
+    Top = 48
+    object EditCut: TEditCut
+      Category = 'Edit'
+      Caption = 'Cu&t'
+      Hint = 'Cut'
+      ImageIndex = 4
+      ShortCut = 16472
+    end
+    object EditCopy: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      Hint = 'Copy'
+      ImageIndex = 3
+      ShortCut = 16451
+    end
+    object EditPaste: TEditPaste
+      Category = 'Edit'
+      Caption = '&Paste'
+      Hint = 'Paste'
+      ImageIndex = 5
+      ShortCut = 16470
+    end
+  end
+  object MainMenu: TMainMenu
+    Images = ImagesDataModule.ImageList1
+    Left = 360
+    Top = 48
+    object mnuEdit: TMenuItem
+      Caption = '&Edit'
+      object mnuEditCopy: TMenuItem
+        Action = EditCopy
+      end
+      object mnuEditCut: TMenuItem
+        Action = EditCut
+      end
+      object Separator1: TMenuItem
+        Caption = '-'
+      end
+      object mnuEditPaste: TMenuItem
+        Action = EditPaste
+      end
+    end
+  end
+end
