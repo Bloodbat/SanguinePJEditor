@@ -28,26 +28,50 @@ unit PJStrings;
 interface
 
 const
-  sAuthor = 'author';
-  sAuthorEmail = 'authorEmail';
-  sAuthorURL = 'authorUrl';
-  sBrand = 'brand';
-  sChangeLogURL = 'changelogUrl';
-  sDescription = 'description';
-  sDonateURL = 'donateUrl';
-  sHidden = 'hidden';
-  sKeywords = 'keywords';
-  sLicense = 'license';
-  sManualURL = 'manualUrl';
-  sMinRackVersion = 'minRackVersion';
-  sModularGridURL = 'modularGridUrl';
-  sModules = 'modules';
-  sName = 'name';
-  sPluginURL = 'pluginUrl';
-  sSlug = 'slug';
-  sSourceURL = 'sourceUrl';
-  sTags = 'tags';
-  sVersion = 'version';
+
+  ArrayManifestKeywords: array of string = (
+    'slug',
+    'name',
+    'modules',
+    'tags',
+    'author',
+    'version',
+    'description',
+    'license',
+    'authorEmail',
+    'authorUrl',
+    'pluginUrl',
+    'manualUrl',
+    'sourceUrl',
+    'changelogUrl',
+    'donateUrl',
+    'minRackVersion',
+    'brand',
+    'keywords',
+    'modularGridUrl',
+    'hidden'
+    );
+
+  iSlug = 0;
+  iName = 1;
+  iModules = 2;
+  iTags = 3;
+  iAuthor = 4;
+  iVersion = 5;
+  iDescription = 6;
+  iLicense = 7;
+  iAuthorEmail = 8;
+  iAuthorURL = 9;
+  iPluginURL = 10;
+  iManualURL = 11;
+  iSourceURL = 12;
+  iChangeLogURL = 13;
+  iDonateURL = 14;
+  iMinRackVersion = 15;
+  iBrand = 16;
+  iKeywords = 17;
+  iModularGridURL = 18;
+  iHidden = 19;
 
 resourcestring
   rsAboutDate = 'Built on: %.2d/%.2d/%d';
@@ -66,13 +90,17 @@ resourcestring
   rsAboutGNU3 = 'Click the "License" item in the "Help" menu for more information.';
 
   // Status
-  rsReady = 'Ready';
-  rsLoading = 'Loading...';
-  rsSaving = 'Saving...';
+  rsStatusReady = 'Ready';
+  rsStatusLoading = 'Loading...';
+  rsStatusSaving = 'Saving...';
 
   // Errors
   rsErrorTitle = 'Error!';
   rsErrorInvalidJSon = 'Invalid or corrupt json manifest.' + LineEnding + 'Aborting.';
+
+  // Queries
+  rsQuestionModified = 'Save Changes to Manifest?';
+  rsQuestionModifedTitle = 'Manifest Changed';
 
 implementation
 
