@@ -120,14 +120,14 @@ uses
 
 function GetTagAlias(const Tag: string): string;
 var
-  i: integer;
+  Item: integer;
   TagAlias: TTagAlias;
   S: string;
 begin
   Result := '';
-  for i := 0 to Length(DeprecatedTags) - 1 do
+  for Item := 0 to Length(DeprecatedTags) - 1 do
   begin
-    TagAlias := DeprecatedTags[i];
+    TagAlias := DeprecatedTags[Item];
     for S in TagAlias.DeprecatedTags do
       if AnsiCompareText(Tag, S) = 0 then
         Exit(TagAlias.TagName);
