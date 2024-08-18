@@ -183,6 +183,7 @@ type
     procedure ToggleGUI(const EnableGUI: boolean);
     procedure UpdateField(TheRoot: TJSONObject; const Path: TJSONStringType;
       LabelEd: TLabeledEdit);
+    procedure UpdateModuleCount;
   end;
 
 var
@@ -263,7 +264,7 @@ begin
         ToggleGUI(True);
         ChangeWindowCaption(FFileName);
         SetModified(True);
-        ChangePanelText(iStatusPanelModuleCount, Format(sModuleCount, [0]));
+        UpdateModuleCount;
       end;
     finally
       frmNewPlugin.Free;
@@ -300,7 +301,7 @@ begin
         end;
         FFileName := OpenDialog.FileName;
         ChangeWindowCaption(FFileName);
-        ChangePanelText(iStatusPanelModuleCount, Format(sModuleCount, [FModules.Count]));
+        UpdateModuleCount;
       end;
       ChangePanelText(iStatusPanelState, rsStatusReady);
       Cursor := crDefault;
@@ -487,6 +488,7 @@ begin
       strgrdModules.InsertRowWithValues(strgrdModules.RowCount,
         [lbledModuleSlug.Text, ArrayCheckboxValues[False]]);
       strgrdModules.Row := strgrdModules.RowCount - 1;
+      UpdateModuleCount;
     end;
   finally
     frmNewModule.Free;
@@ -507,6 +509,7 @@ begin
     strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row)
   else
     ClearModuleInfo;
+  UpdateModuleCount;
   SetModified(True);
 end;
 
@@ -843,6 +846,14 @@ begin
   end
   else if LabelEd.Text <> EmptyStr then
     TheRoot.Add(Path, LabelEd.Text);
+end;
+
+procedure TfrmMain.UpdateModuleCount;
+begin
+  if FModules <> nil then
+    ChangePanelText(iStatusPanelModuleCount, Format(sModuleCount, [FModules.Count]))
+  else
+    ChangePanelText(iStatusPanelModuleCount, Format(sModuleCount, [0]));
 end;
 
 end.
