@@ -25,7 +25,7 @@
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="1"/>
       <RevisionNr Value="1"/>
-      <BuildNr Value="1"/>
+      <BuildNr Value="2"/>
       <StringTable CompanyName="La Serpiente y la Rosa Producciones" FileDescription="An updater for VCV Rack&apos;s plugin.json manifests module tags." LegalCopyright="© 2024 La Serpiente y la Rosa Producciones" ProductName="Sanguine Tag Updater" ProductVersion="1.0"/>
     </VersionInfo>
     <BuildModes>
