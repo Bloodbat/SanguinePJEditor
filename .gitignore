@@ -1,4 +1,10 @@
-bin
 /*.lps
 /*.res
 lib
+/bin/*.exe
+/bin/sanguinetagupdater
+/bin/sanguinetagupdater_intel
+/bin/sanguinetagupdater_arm
+/bin/pjeditor
+/bin/pjeditor_intel
+/bin/pjeditor_arm
