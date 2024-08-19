@@ -422,7 +422,6 @@ end;
 
 procedure TfrmMain.ModuleAcceptChangesExecute(Sender: TObject);
 var
-  HiddenCellValue: char;
   i: integer;
   LabelEd: TLabeledEdit;
   ModuleData: TJSONObject;
@@ -438,11 +437,7 @@ begin
       UpdateField(ModuleData, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
     end;
 
-  HiddenCellValue := strgrdModules.Cells[iColumnHidden, strgrdModules.Row][1];
-  case HiddenCellValue of
-    cValueFalse: WantHidden := False;
-    cValueTrue: WantHidden := True;
-  end;
+  WantHidden := strgrdModules.Cells[iColumnHidden, strgrdModules.Row][1] = cValueTrue;
 
   if ModuleData.FindPath(ArrayManifestKeywords[iHidden]) <> nil then
   begin
