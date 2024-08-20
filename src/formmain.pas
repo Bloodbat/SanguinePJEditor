@@ -36,6 +36,7 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    imgInstructions: TImage;
     mnuProgramOptions: TMenuItem;
     mnuProgram: TMenuItem;
     ProgramOptions: TAction;
@@ -140,6 +141,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure HandleModuleEditorsChange(Sender: TObject);
     procedure HandlePluginEditorsChange(Sender: TObject);
     procedure HelpOpenAboutExecute(Sender: TObject);
@@ -386,6 +388,15 @@ begin
   SaveConfig;
   FreeObjects;
   inherited;
+end;
+
+procedure TfrmMain.FormResize(Sender: TObject);
+begin
+  if imgInstructions.Visible then
+  begin
+    imgInstructions.Left := (Width div 2) - (imgInstructions.Width div 2);
+    imgInstructions.Top := (Height div 2) - (imgInstructions.Height div 2);
+  end;
 end;
 
 procedure TfrmMain.HandleModuleEditorsChange(Sender: TObject);
@@ -861,6 +872,7 @@ end;
 procedure TfrmMain.ToggleGUI(const EnableGUI: boolean);
 begin
   pgctrlPlugin.Visible := EnableGUI;
+  imgInstructions.Visible := not EnableGUI;
 end;
 
 procedure TfrmMain.UpdateField(TheRoot: TJSONObject; const Path: TJSONStringType;
