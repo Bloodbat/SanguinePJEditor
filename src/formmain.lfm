@@ -189,7 +189,7 @@ object frmMain: TfrmMain
           Tag = 7
           Left = 8
           Height = 23
-          Top = 304
+          Top = 248
           Width = 720
           Anchors = [akTop, akLeft, akRight]
           AutoSize = False
@@ -219,7 +219,7 @@ object frmMain: TfrmMain
           Tag = 6
           Left = 8
           Height = 23
-          Top = 248
+          Top = 304
           Width = 720
           Anchors = [akTop, akLeft, akRight]
           AutoSize = False
