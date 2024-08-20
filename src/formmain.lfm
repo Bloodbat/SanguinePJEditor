@@ -149,7 +149,7 @@ object frmMain: TfrmMain
           BorderSpacing.Right = 8
           EditLabel.Height = 15
           EditLabel.Width = 720
-          EditLabel.Caption = 'Slug'
+          EditLabel.Caption = 'Slug (Required)'
           LabelSpacing = 8
           TabOrder = 0
           OnChange = HandlePluginEditorsChange
@@ -165,7 +165,7 @@ object frmMain: TfrmMain
           BorderSpacing.Right = 8
           EditLabel.Height = 15
           EditLabel.Width = 720
-          EditLabel.Caption = 'Name'
+          EditLabel.Caption = 'Name (Required)'
           LabelSpacing = 8
           TabOrder = 1
           OnChange = HandlePluginEditorsChange
@@ -180,7 +180,7 @@ object frmMain: TfrmMain
           AutoSize = False
           EditLabel.Height = 15
           EditLabel.Width = 720
-          EditLabel.Caption = 'Version'
+          EditLabel.Caption = 'Version (Required)'
           LabelSpacing = 8
           TabOrder = 3
           OnChange = HandlePluginEditorsChange
@@ -195,7 +195,7 @@ object frmMain: TfrmMain
           AutoSize = False
           EditLabel.Height = 15
           EditLabel.Width = 720
-          EditLabel.Caption = 'License'
+          EditLabel.Caption = 'License (Required)'
           LabelSpacing = 8
           TabOrder = 5
           OnChange = HandlePluginEditorsChange
@@ -240,7 +240,7 @@ object frmMain: TfrmMain
           AutoSize = False
           EditLabel.Height = 15
           EditLabel.Width = 720
-          EditLabel.Caption = 'Author'
+          EditLabel.Caption = 'Author (Required)'
           LabelSpacing = 8
           TabOrder = 2
           OnChange = HandlePluginEditorsChange
@@ -453,7 +453,7 @@ object frmMain: TfrmMain
             item
               ReadOnly = True
               Title.Caption = 'Slug'
-              Width = 117
+              Width = 134
             end          
             item
               ButtonStyle = cbsCheckboxColumn
@@ -472,7 +472,7 @@ object frmMain: TfrmMain
           OnAfterSelection = strgrdModulesAfterSelection
           OnColRowDeleted = strgrdModulesColRowDeleted
           ColWidths = (
-            117
+            134
             50
           )
         end
@@ -565,7 +565,7 @@ object frmMain: TfrmMain
               AutoSize = False
               EditLabel.Height = 15
               EditLabel.Width = 536
-              EditLabel.Caption = 'Slug'
+              EditLabel.Caption = 'Slug (Required)'
               LabelSpacing = 8
               TabOrder = 0
               OnChange = HandleModuleEditorsChange
@@ -580,7 +580,7 @@ object frmMain: TfrmMain
               AutoSize = False
               EditLabel.Height = 15
               EditLabel.Width = 536
-              EditLabel.Caption = 'Name'
+              EditLabel.Caption = 'Name (Required)'
               LabelSpacing = 8
               TabOrder = 1
               OnChange = HandleModuleEditorsChange
