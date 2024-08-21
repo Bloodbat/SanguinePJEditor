@@ -66,25 +66,20 @@ endif
 all: sanguinetagupdater rackpjeditor
 
 ifndef ARCH_MAC
-sanguinetagupdater:
-	-$(MKDIRCMD) lib
-	-$(MKDIRCMD) $(LIBFOLDER)
-	-$(MKDIRCMD) bin
+sanguinetagupdater:	outputfolders
 	fpc $(COMPILERFLAGS) $(EXTRAFLAGS) sanguinetagupdater.pas
 
-rackpjeditor:
+rackpjeditor: outputfolders
+	lazbuild --bm="Release Intel x64" pjeditor.lpi
+
+outputfolders:
 	-$(MKDIRCMD) lib
 	-$(MKDIRCMD) $(LIBFOLDER)
 	-$(MKDIRCMD) bin
-	lazbuild --bm="Release Intel x64" pjeditor.lpi
 endif
 
 ifdef ARCH_MAC
-sanguinetagupdater:
-	-mkdir lib
-	-mkdir $(LIBX64FOLDER)
-	-mkdir $(LIBARMFOLDER)
-	-mkdir bin
+sanguinetagupdater: outputfolders
 ifndef NOINTEL
 	fpc $(COMPILERFLAGS) $(COMPILERFLAGSX64) $(EXTRAFLAGS) sanguinetagupdater.pas
 endif
@@ -100,11 +95,7 @@ endif
 # MISSING!!! CODESIGN stuff!!!
 	@echo codesign should be here!
 
-rackpjeditor:
-	-mkdir lib
-	-mkdir $(LIBX64FOLDER)
-	-mkdir $(LIBARMFOLDER)
-	-mkdir bin
+rackpjeditor: outputfolders
 ifndef NOINTEL
 	lazbuild --bm="Release MacOS Intel" pjeditor.lpi
 endif
@@ -115,9 +106,16 @@ ifndef NOFAT
 	cd bin
 	lipo -create -output pjeditor pjeditor_arm pjeditor_intel
 	strip pjeditor
+	cd ..
 endif
 # MISSING!!! CODESIGN stuff!!!
 	@echo codesign should be here!
+
+outputfolders:
+	-mkdir lib
+	-mkdir $(LIBX64FOLDER)
+	-mkdir $(LIBARMFOLDER)
+	-mkdir bin
 endif
 
 clean:
