@@ -441,7 +441,7 @@ object frmMain: TfrmMain
             item
               ReadOnly = True
               Title.Caption = 'Slug'
-              Width = 134
+              Width = 117
             end          
             item
               ButtonStyle = cbsCheckboxColumn
@@ -462,7 +462,7 @@ object frmMain: TfrmMain
           OnCheckboxToggled = strgrdModulesCheckboxToggled
           OnColRowDeleted = strgrdModulesColRowDeleted
           ColWidths = (
-            134
+            117
             50
           )
         end
@@ -1362,14 +1362,14 @@ object frmMain: TfrmMain
     object DataCommitChanges: TAction
       Category = 'Data'
       Caption = '&Commit Changes'
-      Hint = 'Commit changes to the working plugin manifest.'
+      Hint = 'Update manifest with current changes.'
       ImageIndex = 9
       OnExecute = DataCommitChangesExecute
     end
     object DataDiscardChanges: TAction
       Category = 'Data'
       Caption = '&Discard Changes'
-      Hint = 'Discard changes to the working plugin manifest.'
+      Hint = 'Revert manifest to last committed changes.'
       ImageIndex = 10
       OnExecute = DataDiscardChangesExecute
     end
