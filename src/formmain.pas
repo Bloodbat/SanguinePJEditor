@@ -39,6 +39,7 @@ type
   { TfrmMain }
 
   TfrmMain = class(TForm)
+    FileSafeSaveAs: TAction;
     chkgrpTags: TCheckGroup;
     DataDiscardChanges: TAction;
     DataCommitChanges: TAction;
@@ -53,7 +54,6 @@ type
     mnuProgram: TMenuItem;
     ProgramOptions: TAction;
     FileSafeOpen: TAction;
-    FileSaveAs: TFileSaveAs;
     HelpOpenManifestManual: TAction;
     lbledPluginAuthor: TLabeledEdit;
     lbledPluginAuthorEmail: TLabeledEdit;
@@ -71,6 +71,7 @@ type
     lbledPluginURL: TLabeledEdit;
     lbledPluginVersion: TLabeledEdit;
     OpenDialog: TOpenDialog;
+    SaveDialog: TSaveDialog;
     scrlboxModuleInfo: TScrollBox;
     scrlboxModuleTags: TScrollBox;
     scrlboxPlugin: TScrollBox;
@@ -136,8 +137,7 @@ type
     procedure DataDiscardChangesExecute(Sender: TObject);
     procedure FileNewExecute(Sender: TObject);
     procedure FileSafeOpenExecute(Sender: TObject);
-    procedure FileSaveAsAccept(Sender: TObject);
-    procedure FileSaveAsBeforeExecute(Sender: TObject);
+    procedure FileSafeSaveAsExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -184,6 +184,7 @@ type
     procedure ClearModuleInfo;
     procedure ClearPluginInfo;
     function DoModifiedQuery: boolean;
+    function DoUncommittedQuery: boolean;
     procedure FillModuleData;
     procedure FillModuleList;
     procedure FillPluginData;
@@ -432,7 +433,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.FileSaveAsAccept(Sender: TObject);
+procedure TfrmMain.FileSafeSaveAsExecute(Sender: TObject);
 var
   i: integer;
   OutString: string;
@@ -443,58 +444,61 @@ var
   TmpModules: TJSONArray;
   TmpTags: TJSONArray;
 begin
-  Cursor := crHourGlass;
-  ChangePanelText(iStatusPanelState, rsStatusSaving);
-  Application.ProcessMessages;
-
-  // Keep modules after plugin info.
-  TmpModules := FPluginBase.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
-  if TmpModules <> nil then
-  begin
-    Modules := TmpModules.Clone as TJSONArray;
-    FPluginBase.Delete(ArrayManifestKeywords[iModules]);
-    TmpModules := nil;
-    FPluginBase.Add(ArrayManifestKeywords[iModules], Modules);
-
-    // Keep tags after module info.
-    Modules := FPluginBase.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
-    for i := 0 to Modules.Count - 1 do
-    begin
-      ModuleData := Modules.Items[i] as TJSONObject;
-      TmpTags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
-      if TmpTags <> nil then
-      begin
-        Tags := TmpTags.Clone as TJSONArray;
-        ModuleData.Delete(ArrayManifestKeywords[iTags]);
-        TmpTags := nil;
-        ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
-        Tags := nil;
-      end;
-    end;
-  end;
-
-  MemoryStream := TMemoryStream.Create;
-  try
-    OutString := FPluginBase.FormatJSON;
-    MemoryStream.WriteBuffer(OutString[1], Length(OutString));
-    MemoryStream.SaveToFile(FileSaveAs.Dialog.FileName);
-    FFileName := FileSaveAs.Dialog.FileName;
-    ChangeWindowCaption(FFileName);
-    SetModified(False);
-  finally
-    MemoryStream.Free;
-  end;
-
-  ChangePanelText(iStatusPanelState, rsStatusReady);
-  Cursor := crDefault;
-end;
-
-procedure TfrmMain.FileSaveAsBeforeExecute(Sender: TObject);
-begin
   if FFileName <> EmptyStr then
   begin
-    FileSaveAs.Dialog.InitialDir := ExtractFileDir(FFileName);
-    FileSaveAs.Dialog.FileName := FFileName;
+    SaveDialog.InitialDir := ExtractFileDir(FFileName);
+    SaveDialog.FileName := ExtractFileName(FFileName);
+  end;
+
+  if not DoUncommittedQuery then
+    Exit;
+
+  if SaveDialog.Execute then
+  begin
+    Cursor := crHourGlass;
+    ChangePanelText(iStatusPanelState, rsStatusSaving);
+    Application.ProcessMessages;
+
+    // Keep modules after plugin info.
+    TmpModules := FPluginBase.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
+    if TmpModules <> nil then
+    begin
+      Modules := TmpModules.Clone as TJSONArray;
+      FPluginBase.Delete(ArrayManifestKeywords[iModules]);
+      TmpModules := nil;
+      FPluginBase.Add(ArrayManifestKeywords[iModules], Modules);
+
+      // Keep tags after module info.
+      Modules := FPluginBase.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
+      for i := 0 to Modules.Count - 1 do
+      begin
+        ModuleData := Modules.Items[i] as TJSONObject;
+        TmpTags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+        if TmpTags <> nil then
+        begin
+          Tags := TmpTags.Clone as TJSONArray;
+          ModuleData.Delete(ArrayManifestKeywords[iTags]);
+          TmpTags := nil;
+          ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
+          Tags := nil;
+        end;
+      end;
+    end;
+
+    MemoryStream := TMemoryStream.Create;
+    try
+      OutString := FPluginBase.FormatJSON;
+      MemoryStream.WriteBuffer(OutString[1], Length(OutString));
+      MemoryStream.SaveToFile(SaveDialog.FileName);
+      FFileName := SaveDialog.FileName;
+      ChangeWindowCaption(FFileName);
+      SetModified(False);
+    finally
+      MemoryStream.Free;
+    end;
+
+    ChangePanelText(iStatusPanelState, rsStatusReady);
+    Cursor := crDefault;
   end;
 end;
 
@@ -752,7 +756,7 @@ begin
   FInvalidPluginInfo := not Result;
   FValidManifest := not FInvalidPluginInfo and (FErrorModules.Size = 0);
   DataCommitChanges.Enabled := FValidManifest;
-  FileSaveAs.Enabled := FValidManifest;
+  FileSafeSaveAs.Enabled := FValidManifest;
   StatusBar.Invalidate;
 end;
 
@@ -765,7 +769,7 @@ begin
     FErrorModules.Insert(strgrdModules.Row);
   FValidManifest := not FInvalidPluginInfo and (FErrorModules.Size = 0);
   DataCommitChanges.Enabled := FValidManifest;
-  FileSaveAs.Enabled := FValidManifest;
+  FileSafeSaveAs.Enabled := FValidManifest;
   StatusBar.Invalidate;
 end;
 
@@ -808,13 +812,7 @@ begin
   ValidManifest := not (FInvalidPluginInfo or (FErrorModules.Size > 0));
   if FModified or not FChangesCommited then
   begin
-    if not FChangesCommited then
-    begin
-      Choice := Application.MessageBox(PChar(rsQuestionUncommited),
-        PChar(rsQuestionUncommitedTitle), MB_YESNO + MB_ICONQUESTION);
-      if Choice = idYes then
-        CanContinue := False;
-    end;
+    CanContinue := DoUncommittedQuery;
 
     if CanContinue and not ValidManifest then
     begin
@@ -830,10 +828,24 @@ begin
       Choice := Application.MessageBox(PChar(rsQuestionModified),
         PChar(rsQuestionModifedTitle), MB_YESNOCANCEL + MB_ICONQUESTION);
       if Choice = idYes then
-        FileSaveAs.Execute;
+        FileSafeSaveAs.Execute;
       if Choice = idCancel then
         Result := False;
     end;
+  end;
+end;
+
+function TfrmMain.DoUncommittedQuery: boolean;
+var
+  Choice: integer;
+begin
+  Result := True;
+  if not FChangesCommited then
+  begin
+    Choice := Application.MessageBox(PChar(rsQuestionUncommited),
+      PChar(rsQuestionUncommitedTitle), MB_YESNO + MB_ICONQUESTION);
+    if Choice = idYes then
+      Result := False;
   end;
 end;
 
@@ -1021,7 +1033,7 @@ end;
 procedure TfrmMain.SetModified(const IsModified: boolean);
 begin
   FModified := IsModified;
-  FileSaveAs.Enabled := IsModified and FValidManifest;
+  FileSafeSaveAs.Enabled := IsModified and FValidManifest;
   case IsModified of
     True: ChangePanelText(iStatusPanelModified, cAsterisk);
     False: ChangePanelText(iStatusPanelModified, EmptyStr);

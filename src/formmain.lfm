@@ -59,7 +59,7 @@ object frmMain: TfrmMain
     object tbSaveAs: TToolButton
       Left = 52
       Top = 2
-      Action = FileSaveAs
+      Action = FileSafeSaveAs
     end
     object tbSeparator1: TToolButton
       Left = 75
@@ -1214,7 +1214,7 @@ object frmMain: TfrmMain
         Caption = '-'
       end
       object mnuFileSaveAs: TMenuItem
-        Action = FileSaveAs
+        Action = FileSafeSaveAs
       end
       object Separator2: TMenuItem
         Caption = '-'
@@ -1331,19 +1331,6 @@ object frmMain: TfrmMain
       Caption = '&Manifest Manual'
       OnExecute = HelpOpenManifestManualExecute
     end
-    object FileSaveAs: TFileSaveAs
-      Category = 'File'
-      Caption = 'Save &As ...'
-      Dialog.Title = 'Save Manifest As'
-      Dialog.DefaultExt = '.json'
-      Dialog.Filter = 'Rack Plugin Manifest|plugin.json|All Files|*.*'
-      Dialog.Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
-      Enabled = False
-      Hint = 'Save Manifest as.'
-      ImageIndex = 2
-      BeforeExecute = FileSaveAsBeforeExecute
-      OnAccept = FileSaveAsAccept
-    end
     object FileSafeOpen: TAction
       Category = 'File'
       Caption = '&Open Manifest ...'
@@ -1373,6 +1360,14 @@ object frmMain: TfrmMain
       ImageIndex = 10
       OnExecute = DataDiscardChangesExecute
     end
+    object FileSafeSaveAs: TAction
+      Category = 'File'
+      Caption = 'Save &As ...'
+      Enabled = False
+      Hint = 'Save Manifest as.'
+      ImageIndex = 2
+      OnExecute = FileSafeSaveAsExecute
+    end
   end
   object OpenDialog: TOpenDialog
     Title = 'Open Plugin Manifest'
@@ -1380,6 +1375,14 @@ object frmMain: TfrmMain
     Filter = 'Rack Plugin Manifest|plugin.json|All Files|*.*'
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     Left = 384
+    Top = 184
+  end
+  object SaveDialog: TSaveDialog
+    Title = 'Save Manifest As'
+    DefaultExt = '.json'
+    Filter = 'Rack Plugin Manifest|plugin.json|All Files|*.*'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    Left = 424
     Top = 184
   end
 end
