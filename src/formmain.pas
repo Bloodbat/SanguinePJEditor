@@ -372,6 +372,8 @@ begin
         UpdateModuleCount;
         FInvalidPluginInfo := False;
         FChangesCommited := True;
+        CheckValidModule;
+        CheckValidPlugin;
       end;
     finally
       frmNewPlugin.Free;
@@ -424,6 +426,8 @@ begin
     FChangesCommited := True;
     SetModified(False);
     FModuleGridMutex := False;
+    CheckValidModule;
+    CheckValidPlugin;
   end;
 end;
 
