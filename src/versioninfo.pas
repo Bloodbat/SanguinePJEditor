@@ -15,7 +15,7 @@
 (* You should have received a copy of the GNU General Public License along
    with Bloodbat's Code Library. If not, see <http://www.gnu.org/licenses/>.  *)
 
-{ Provides an easy way of integrating a program's version information into an
+{ Provides an easy way to integrate a program's version information into an
   application.                                                                }
 
 unit VersionInfo;
