@@ -632,6 +632,7 @@ procedure TfrmMain.ModuleRemoveExecute(Sender: TObject);
 begin
   FModuleGridMutex := True;
   FModulesWorking.Delete(strgrdModules.Row - 1);
+  FErrorModules.Delete(strgrdModules.Row);
   strgrdModules.DeleteRow(strgrdModules.Row);
   if strgrdModules.Row > 0 then
     strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row)
