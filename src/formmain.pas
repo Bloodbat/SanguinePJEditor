@@ -429,12 +429,44 @@ end;
 
 procedure TfrmMain.FileSaveAsAccept(Sender: TObject);
 var
+  i: integer;
   OutString: string;
   MemoryStream: TMemoryStream;
+  ModuleData: TJSONObject;
+  Modules: TJSONArray;
+  Tags: TJSONArray;
+  TmpModules: TJSONArray;
+  TmpTags: TJSONArray;
 begin
   Cursor := crHourGlass;
   ChangePanelText(iStatusPanelState, rsStatusSaving);
   Application.ProcessMessages;
+
+  // Keep modules after plugin info.
+  TmpModules := FPluginBase.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
+  if TmpModules <> nil then
+  begin
+    Modules := TmpModules.Clone as TJSONArray;
+    FPluginBase.Delete(ArrayManifestKeywords[iModules]);
+    TmpModules := nil;
+    FPluginBase.Add(ArrayManifestKeywords[iModules], Modules);
+
+    // Keep tags after module info.
+    Modules := FPluginBase.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
+    for i := 0 to Modules.Count - 1 do
+    begin
+      ModuleData := Modules.Items[i] as TJSONObject;
+      TmpTags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+      if TmpTags <> nil then
+      begin
+        Tags := TmpTags.Clone as TJSONArray;
+        ModuleData.Delete(ArrayManifestKeywords[iTags]);
+        TmpTags := nil;
+        ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
+        Tags := nil;
+      end;
+    end;
+  end;
 
   MemoryStream := TMemoryStream.Create;
   try
