@@ -26,21 +26,21 @@ COMPILERFLAGS = -MObjFPC -Scghim -CX -O3 -Xs -XX -l -vewnhibq -Fusrc -Fu. -FEbin
 ifeq ($(OS),Windows_NT)
 	ARCH_WIN = 1
 	CPU_X64 = 1
-	undefine ARCH_UNKNOWN
+	ARCH_UNKNOWN = 0
 else
 	UNAME_OS := $(shell uname -s)
 	ifeq ($(UNAME_OS),Linux)
 		ARCH_LIN = 1
 		CPU_X64 = 1
-		undefine ARCH_UNKNOWN
+		 ARCH_UNKNOWN = 0
 	endif
 	ifeq ($(UNAME_OS),Darwin)
 		ARCH_MAC = 1
-		undefine ARCH_UNKNOWN
+		ARCH_UNKNOWN = 0
 	endif
 endif
 
-ifdef ARCH_UNKNOWN
+ifeq (ARCH_UNKNOWN,1)
 $(error Could not determine machine type.)
 endif
 
@@ -87,10 +87,8 @@ ifndef NOARM
 	fpc $(COMPILERFLAGS) $(COMPILERFLAGSARM) $(EXTRAFLAGS) sanguinetagupdater.pas
 endif
 ifndef NOFAT
-	cd bin
-	lipo -create -output sanguinetagupdater sanguinetagupdater_arm sanguinetagupdater_intel
-	strip sanguinetagupdater
-	cd ..
+	lipo -create -output ./bin/sanguinetagupdater ./bin/sanguinetagupdater_arm ./bin/sanguinetagupdater_intel
+	strip ./bin/sanguinetagupdater
 endif
 # MISSING!!! CODESIGN stuff!!!
 	@echo codesign should be here!
@@ -103,10 +101,11 @@ ifndef NOARM
 	lazbuild --bm="Release MacOS ARM" pjeditor.lpi
 endif
 ifndef NOFAT
-	cd bin
-	lipo -create -output pjeditor pjeditor_arm pjeditor_intel
-	strip pjeditor
-	cd ..
+	lipo -create -output ./bin/pjeditor ./bin/pjeditor_arm ./bin/pjeditor_intel
+	strip ./bin/pjeditor
+	cp ./bin/pjeditor ./bin/pjeditor.app/Contents/MacOS
+	cp ./iconsrc/pj_editor_icon.icns ./bin/pjeditor.app/Contents/Resources
+	cp ./info.plist ./bin/pjeditor.app/Contents
 endif
 # MISSING!!! CODESIGN stuff!!!
 	@echo codesign should be here!
@@ -116,6 +115,10 @@ outputfolders:
 	-mkdir $(LIBX64FOLDER)
 	-mkdir $(LIBARMFOLDER)
 	-mkdir bin
+	-mkdir ./bin/pjeditor.app
+	-mkdir ./bin/pjeditor.app/Contents
+	-mkdir ./bin/pjeditor.app/Contents/MacOS
+	-mkdir ./bin/pjeditor.app/Contents/Resources
 endif
 
 clean:

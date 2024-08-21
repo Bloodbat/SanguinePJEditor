@@ -52,7 +52,6 @@
             <SmartLinkUnit Value="True"/>
             <TargetProcessor Value="COREAVX"/>
             <TargetCPU Value="x86_64"/>
-            <TargetOS Value="macos"/>
             <Optimizations>
               <OptimizationLevel Value="3"/>
             </Optimizations>
@@ -87,7 +86,6 @@
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
             <TargetCPU Value="aarch64"/>
-            <TargetOS Value="macos"/>
             <Optimizations>
               <OptimizationLevel Value="3"/>
             </Optimizations>
