@@ -171,6 +171,7 @@ type
     FInvalidPluginInfo: boolean;
     FModified: boolean;
     FModuleGridMutex: boolean;
+    FValidManifest: boolean;
     FPluginBase: TJSONObject;
     FRootWorking: TJSONObject;
     FModulesWorking: TJSONArray;
@@ -748,8 +749,9 @@ begin
     (lbledPluginName.Text <> EmptyStr) and (lbledPluginVersion.Text <> EmptyStr) and
     (lbledPluginLicense.Text <> EmptyStr) and (lbledPluginAuthor.Text <> EmptyStr);
   FInvalidPluginInfo := not Result;
-  DataCommitChanges.Enabled := not FInvalidPluginInfo and (FErrorModules.Size = 0);
-  FileSaveAs.Enabled := DataCommitChanges.Enabled;
+  FValidManifest := not FInvalidPluginInfo and (FErrorModules.Size = 0);
+  DataCommitChanges.Enabled := FValidManifest;
+  FileSaveAs.Enabled := FValidManifest;
   StatusBar.Invalidate;
 end;
 
@@ -760,8 +762,9 @@ begin
     FErrorModules.Delete(strgrdModules.Row)
   else
     FErrorModules.Insert(strgrdModules.Row);
-  DataCommitChanges.Enabled := not FInvalidPluginInfo and (FErrorModules.Size = 0);
-  FileSaveAs.Enabled := DataCommitChanges.Enabled;
+  FValidManifest := not FInvalidPluginInfo and (FErrorModules.Size = 0);
+  DataCommitChanges.Enabled := FValidManifest;
+  FileSaveAs.Enabled := FValidManifest;
   StatusBar.Invalidate;
 end;
 
@@ -1017,7 +1020,7 @@ end;
 procedure TfrmMain.SetModified(const IsModified: boolean);
 begin
   FModified := IsModified;
-  FileSaveAs.Enabled := IsModified;
+  FileSaveAs.Enabled := IsModified and FValidManifest;
   case IsModified of
     True: ChangePanelText(iStatusPanelModified, cAsterisk);
     False: ChangePanelText(iStatusPanelModified, EmptyStr);
