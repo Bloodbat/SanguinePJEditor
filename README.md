@@ -14,13 +14,11 @@ Tools for easier editing and updating of VCV Rack's plugin.json manifests.
 
 - Every non-deprecated tag can be toggled on and off.
 
-- Deprecated tags are automatically updated to their current form and saved with the manifest when saved in the program.
+- Deprecated tags are automatically brought up to date to their current form and updated in the manifest when saved in the program.
 
-- The program tries to be as non-destructive as possible: the "Commit" button *must* be pressed before any changes are applied to the plugin manifest; this applies to individual modules as well: changes to individual modules must be committed on a per-module basis.
+- The program tries to be as non-destructive as possible: the "Commit" button *must* be pressed before any changes are applied to the plugin manifest.
 
-- Changes can be discarded by pressing the "Discard" button: when using this button, the latest changes are thrown away and the last committed plugin or module information is loaded from the manifest.
-
-- Plugin information and modules are treated separately: changes to a module can be commited without updating and committing the plugin information, and visceversa.
+- Changes can be discarded by pressing the "Discard" button: when using this button, the current changes are thrown away and the last committed manifest is reloaded.
 
 - The program produces clean manifests: empty keys are removed.
 
