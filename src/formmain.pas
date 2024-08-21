@@ -29,31 +29,32 @@ interface
 
 uses
   Forms, Menus, ActnList, ComCtrls, StdActns, ExtCtrls, Grids, Classes,
-  SysUtils, FpJson, Controls, Buttons, Dialogs;
+  SysUtils, FpJson, Controls, Buttons, Dialogs, GSet, GUtil, StdCtrls;
 
 type
+
+  TLessInt = specialize TLess<integer>;
+  TIntegerSet = specialize TSet<integer, TLessInt>;
 
   { TfrmMain }
 
   TfrmMain = class(TForm)
-    imgInstructions: TImage;
-    mnuProgramOptions: TMenuItem;
-    mnuProgram: TMenuItem;
-    ProgramOptions: TAction;
-    FileSafeOpen: TAction;
-    btnAcceptPluginChanges: TBitBtn;
-    btnAcceptPluginChanges1: TBitBtn;
-    btnCancelPluginChanges: TBitBtn;
-    btnCancelPluginChanges1: TBitBtn;
     chkgrpTags: TCheckGroup;
-    FileSaveAs: TFileSaveAs;
-    HelpOpenManifestManual: TAction;
+    DataDiscardChanges: TAction;
+    DataCommitChanges: TAction;
+    imgInstructions: TImage;
     lbledModuleDescription: TLabeledEdit;
     lbledModuleKeywords: TLabeledEdit;
     lbledModuleManualURL: TLabeledEdit;
     lbledModuleModularGridURL: TLabeledEdit;
     lbledModuleName: TLabeledEdit;
     lbledModuleSlug: TLabeledEdit;
+    mnuProgramOptions: TMenuItem;
+    mnuProgram: TMenuItem;
+    ProgramOptions: TAction;
+    FileSafeOpen: TAction;
+    FileSaveAs: TFileSaveAs;
+    HelpOpenManifestManual: TAction;
     lbledPluginAuthor: TLabeledEdit;
     lbledPluginAuthorEmail: TLabeledEdit;
     lbledPluginAuthorURL: TLabeledEdit;
@@ -70,9 +71,6 @@ type
     lbledPluginURL: TLabeledEdit;
     lbledPluginVersion: TLabeledEdit;
     OpenDialog: TOpenDialog;
-    pnlModuleData: TPanel;
-    pnlModuleDataControls: TPanel;
-    pnlPluginDataControls: TPanel;
     scrlboxModuleInfo: TScrollBox;
     scrlboxModuleTags: TScrollBox;
     scrlboxPlugin: TScrollBox;
@@ -83,10 +81,6 @@ type
     Separator4: TMenuItem;
     mnuFileNew: TMenuItem;
     FileNew: TAction;
-    ModuleDiscardChanges: TAction;
-    ModuleAcceptChanges: TAction;
-    PluginDiscardChanges: TAction;
-    PluginAcceptChanges: TAction;
     ModuleRemove: TAction;
     ModuleAdd: TAction;
     HelpOpenAbout: TAction;
@@ -134,6 +128,12 @@ type
     tbSeparator3: TToolButton;
     tbSeparator4: TToolButton;
     tbOptions: TToolButton;
+    ToolButton1: TToolButton;
+    tbCommitChanges: TToolButton;
+    tbDiscardChanges: TToolButton;
+    procedure chkgrpTagsItemClick(Sender: TObject; Index: integer);
+    procedure DataCommitChangesExecute(Sender: TObject);
+    procedure DataDiscardChangesExecute(Sender: TObject);
     procedure FileNewExecute(Sender: TObject);
     procedure FileSafeOpenExecute(Sender: TObject);
     procedure FileSaveAsAccept(Sender: TObject);
@@ -147,27 +147,33 @@ type
     procedure HelpOpenAboutExecute(Sender: TObject);
     procedure HelpOpenLicenseExecute(Sender: TObject);
     procedure HelpOpenManifestManualExecute(Sender: TObject);
-    procedure ModuleAcceptChangesExecute(Sender: TObject);
     procedure ModuleAddExecute(Sender: TObject);
-    procedure ModuleDiscardChangesExecute(Sender: TObject);
     procedure ModuleRemoveExecute(Sender: TObject);
-    procedure PluginAcceptChangesExecute(Sender: TObject);
-    procedure PluginDiscardChangesExecute(Sender: TObject);
     procedure ProgramOptionsExecute(Sender: TObject);
+    procedure StatusBarDrawPanel(TheStatusBar: TStatusBar; Panel: TStatusPanel;
+      const Rect: TRect);
     procedure strgrdModulesAfterSelection(Sender: TObject; aCol, aRow: integer);
+    procedure strgrdModulesBeforeSelection(Sender: TObject; aCol, aRow: integer);
+    procedure strgrdModulesCheckboxToggled(Sender: TObject;
+      aCol, aRow: integer; aState: TCheckboxState);
     procedure strgrdModulesColRowDeleted(Sender: TObject; IsColumn: boolean;
       sIndex, tIndex: integer);
   protected
     procedure PrintParserError;
   private
+    FErrorModules: TIntegerSet;
     FNoNameCount: integer;
     FConfigFileName: string;
     FDefaultAuthor: string;
     FDefaultLicense: string;
     FFileName: string;
+    FChangesCommited: boolean;
+    FInvalidPluginInfo: boolean;
     FModified: boolean;
-    FRoot: TJSONObject;
-    FModules: TJSONArray;
+    FModuleGridMutex: boolean;
+    FPluginBase: TJSONObject;
+    FRootWorking: TJSONObject;
+    FModulesWorking: TJSONArray;
     procedure ChangePanelText(const PanelNum: integer; const PanelText: string);
     procedure ChangeWindowCaption(const TheFileName: string);
     function CheckCanDeleteModule: boolean;
@@ -191,7 +197,9 @@ type
     procedure SetModified(const IsModified: boolean);
     procedure SetTextBox(const Value: string; LabelEd: TLabeledEdit);
     procedure ToggleGUI(const EnableGUI: boolean);
-    procedure UpdateField(TheRoot: TJSONObject; const Path: TJSONStringType;
+    procedure UpdateBooleanField(TheRoot: TJSONObject; const Path: TJSONStringType;
+      AValue: boolean);
+    procedure UpdateStringField(TheRoot: TJSONObject; const Path: TJSONStringType;
       LabelEd: TLabeledEdit);
     procedure UpdateModuleCount;
   end;
@@ -203,7 +211,8 @@ implementation
 
 uses
   Variants, ModuleTagging, LCLIntf, FormAbout, PJStrings, GUITools,
-  FormNewPlugin, SanguineJSONReader, FormNewModule, BatJSONConf, LCLType, FormOptions;
+  FormNewPlugin, SanguineJSONReader, FormNewModule, BatJSONConf, LCLType,
+  FormOptions, Graphics;
 
   {$R *.lfm}
 
@@ -237,9 +246,15 @@ const
     cValueTrue
     );
 
+  ArrayChecboxBooleans: array[cbUnchecked..cbChecked] of boolean = (
+    False,
+    True
+    );
+
   iStatusPanelState = 0;
-  iStatusPanelModified = 1;
-  iStatusPanelModuleCount = 2;
+  iStatusPanelErrors = 1;
+  iStatusPanelModified = 2;
+  iStatusPanelModuleCount = 3;
 
   iColumnSlug = 0;
   iColumnHidden = 1;
@@ -253,6 +268,7 @@ var
 begin
   if DoModifiedQuery then
   begin
+    FModuleGridMutex := True;
     frmNewPlugin := TfrmNewPlugin.Create(nil);
     try
       frmNewPlugin.lbledPluginAuthor.Text := FDefaultAuthor;
@@ -260,6 +276,7 @@ begin
       if frmNewPlugin.ShowModal = mrOk then
       begin
         FreeObjects;
+        FErrorModules := TIntegerSet.Create;
         ClearData;
         SetTextBox(frmNewPlugin.lbledPluginSlug.Text, lbledPluginSlug);
         SetTextBox(frmNewPlugin.lbledPluginName.Text, lbledPluginName);
@@ -272,18 +289,83 @@ begin
           lbledPluginAuthor.Text, ArrayManifestKeywords[iVersion],
           lbledPluginVersion.Text, ArrayManifestKeywords[iLicense],
           lbledPluginLicense.Text]);
-        FRoot := NewPluginData;
+        FRootWorking := NewPluginData;
+        FPluginBase := FRootWorking.Clone as TJSONObject;
         Inc(FNoNameCount);
         FFileName := Format(sDefaultFileName, [FNoNameCount]);
         ToggleGUI(True);
         ChangeWindowCaption(FFileName);
         SetModified(True);
         UpdateModuleCount;
+        FInvalidPluginInfo := False;
+        FChangesCommited := True;
       end;
     finally
       frmNewPlugin.Free;
     end;
+    FModuleGridMutex := False;
   end;
+end;
+
+procedure TfrmMain.chkgrpTagsItemClick(Sender: TObject; Index: integer);
+var
+  i: integer;
+  ModuleData: TJSONObject;
+  Tags: TJSONArray;
+begin
+  if FModuleGridMutex then
+    Exit;
+  ModuleData := FModulesWorking.Items[strgrdModules.Row - 1] as TJSONObject;
+  Tags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+  if Tags <> nil then
+  begin
+    ModuleData.Delete(ArrayManifestKeywords[iTags]);
+    Tags := nil;
+  end;
+
+  Tags := TJSONArray.Create;
+
+  for i := 0 to chkgrpTags.Items.Count - 1 do
+    if chkgrpTags.Checked[i] then
+      Tags.Add(chkgrpTags.Items[i]);
+
+  if Tags.Count > 0 then
+    ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
+  SetModified(True);
+  FChangesCommited := False;
+end;
+
+procedure TfrmMain.DataCommitChangesExecute(Sender: TObject);
+begin
+  FModuleGridMutex := True;
+  FPluginBase.Free;
+  FPluginBase := FRootWorking.Clone as TJSONObject;
+  FChangesCommited := True;
+  FModuleGridMutex := False;
+end;
+
+procedure TfrmMain.DataDiscardChangesExecute(Sender: TObject);
+begin
+  FModuleGridMutex := True;
+  ClearData;
+  FRootWorking.Free;
+  FRootWorking := FPluginBase.Clone as TJSONObject;
+  FillPluginData;
+  FModulesWorking := FRootWorking.FindPath(ArrayManifestKeywords[iModules]) as
+    TJSONArray;
+  if FModulesWorking <> nil then
+  begin
+    FillModuleList;
+    strgrdModules.Row := 1;
+    strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row);
+  end;
+  UpdateModuleCount;
+  FInvalidPluginInfo := False;
+  FErrorModules.Free;
+  FErrorModules := TIntegerSet.Create;
+  FChangesCommited := True;
+  SetModified(True);
+  FModuleGridMutex := False;
 end;
 
 procedure TfrmMain.FileSafeOpenExecute(Sender: TObject);
@@ -292,6 +374,7 @@ var
 begin
   if DoModifiedQuery then
   begin
+    FModuleGridMutex := True;
     if OpenDialog.Execute then
     begin
       Cursor := crHourGlass;
@@ -299,15 +382,18 @@ begin
       Application.ProcessMessages;
       ClearData;
       FreeObjects;
+      FErrorModules := TIntegerSet.Create;
       ReadJSON(OpenDialog.FileName, JData, @PrintParserError);
       if JData <> nil then
-        FRoot := JData as TJSONObject;
-      if FRoot <> nil then
+        FRootWorking := JData as TJSONObject;
+      if FRootWorking <> nil then
       begin
         ToggleGUI(True);
+        FPluginBase := FRootWorking.Clone as TJSONObject;
         FillPluginData;
-        FModules := FRoot.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
-        if FModules <> nil then
+        FModulesWorking := FRootWorking.FindPath(ArrayManifestKeywords[iModules]) as
+          TJSONArray;
+        if FModulesWorking <> nil then
         begin
           FillModuleList;
           strgrdModules.Row := 1;
@@ -316,10 +402,15 @@ begin
         FFileName := OpenDialog.FileName;
         ChangeWindowCaption(FFileName);
         UpdateModuleCount;
+
       end;
       ChangePanelText(iStatusPanelState, rsStatusReady);
       Cursor := crDefault;
     end;
+    FInvalidPluginInfo := False;
+    FChangesCommited := True;
+    SetModified(False);
+    FModuleGridMutex := False;
   end;
 end;
 
@@ -334,7 +425,7 @@ begin
 
   MemoryStream := TMemoryStream.Create;
   try
-    OutString := FRoot.FormatJSON;
+    OutString := FPluginBase.FormatJSON;
     MemoryStream.WriteBuffer(OutString[1], Length(OutString));
     MemoryStream.SaveToFile(FileSaveAs.Dialog.FileName);
     FFileName := FileSaveAs.Dialog.FileName;
@@ -380,6 +471,9 @@ begin
   end
   else
     Position := poDefault;
+  FErrorModules := TIntegerSet.Create;
+  FChangesCommited := True;
+  SetModified(False);
   ToggleGUI(False);
 end;
 
@@ -400,13 +494,29 @@ begin
 end;
 
 procedure TfrmMain.HandleModuleEditorsChange(Sender: TObject);
+var
+  LabelEd: TLabeledEdit;
+  ModuleData: TJSONObject;
 begin
-  ModuleAcceptChanges.Enabled := CheckValidModule;
+  if FModuleGridMutex then
+    Exit;
+  ModuleData := FModulesWorking.Items[strgrdModules.Row - 1] as TJSONObject;
+  LabelEd := Sender as TLabeledEdit;
+  UpdateStringField(ModuleData, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
+  CheckValidModule;
+  SetModified(True);
+  FChangesCommited := False;
 end;
 
 procedure TfrmMain.HandlePluginEditorsChange(Sender: TObject);
+var
+  LabelEd: TLabeledEdit;
 begin
-  PluginAcceptChanges.Enabled := CheckValidPlugin;
+  LabelEd := Sender as TLabeledEdit;
+  UpdateStringField(FRootWorking, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
+  CheckValidPlugin;
+  SetModified(True);
+  FChangesCommited := False;
 end;
 
 procedure TfrmMain.HelpOpenAboutExecute(Sender: TObject);
@@ -431,54 +541,6 @@ begin
   OpenURL(sURLManifestManual);
 end;
 
-procedure TfrmMain.ModuleAcceptChangesExecute(Sender: TObject);
-var
-  i: integer;
-  LabelEd: TLabeledEdit;
-  ModuleData: TJSONObject;
-  Tags: TJSONArray;
-  WantHidden: boolean = False;
-begin
-  ModuleData := FModules.Items[strgrdModules.Row - 1] as TJSONObject;
-
-  for i := 0 to scrlboxModuleInfo.ControlCount - 1 do
-    if scrlboxModuleInfo.Controls[i] is TLabeledEdit then
-    begin
-      LabelEd := scrlboxModuleInfo.Controls[i] as TLabeledEdit;
-      UpdateField(ModuleData, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
-    end;
-
-  WantHidden := strgrdModules.Cells[iColumnHidden, strgrdModules.Row][1] = cValueTrue;
-
-  if ModuleData.FindPath(ArrayManifestKeywords[iHidden]) <> nil then
-  begin
-    case WantHidden of
-      True: ModuleData.Elements[ArrayManifestKeywords[iHidden]].AsBoolean := WantHidden;
-      False: ModuleData.Delete(ArrayManifestKeywords[iHidden]);
-    end;
-  end
-  else if WantHidden then
-    ModuleData.Add(ArrayManifestKeywords[iHidden], WantHidden);
-
-  Tags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
-  if Tags <> nil then
-  begin
-    ModuleData.Delete(ArrayManifestKeywords[iTags]);
-    Tags := nil;
-  end;
-
-  Tags := TJSONArray.Create;
-
-  for i := 0 to chkgrpTags.Items.Count - 1 do
-    if chkgrpTags.Checked[i] then
-      Tags.Add(chkgrpTags.Items[i]);
-
-  if Tags.Count > 0 then
-    ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
-
-  SetModified(True);
-end;
-
 procedure TfrmMain.ModuleAddExecute(Sender: TObject);
 var
   ItemId: integer;
@@ -490,38 +552,36 @@ begin
   try
     if frmNewModule.ShowModal = mrOk then
     begin
+      FModuleGridMutex := True;
       ClearModuleInfo;
       SetTextBox(frmNewModule.lbledModuleSlug.Text, lbledModuleSlug);
       SetTextBox(frmNewModule.lbledModuleName.Text, lbledModuleName);
       SetModified(True);
-      if FModules = nil then
+      FChangesCommited := False;
+      if FModulesWorking = nil then
       begin
         JArray := TJSONArray.Create;
-        ItemId := FRoot.Add(ArrayManifestKeywords[iModules], JArray);
-        FModules := FRoot.Items[ItemId] as TJSONArray;
+        ItemId := FRootWorking.Add(ArrayManifestKeywords[iModules], JArray);
+        FModulesWorking := FRootWorking.Items[ItemId] as TJSONArray;
       end;
       JObject := TJSONObject.Create([ArrayManifestKeywords[iSlug],
         lbledModuleSlug.Text, ArrayManifestKeywords[iName], lbledModuleName.Text]);
-      FModules.Add(JObject);
+      FModulesWorking.Add(JObject);
       strgrdModules.InsertRowWithValues(strgrdModules.RowCount,
         [lbledModuleSlug.Text, ArrayCheckboxValues[False]]);
       strgrdModules.Row := strgrdModules.RowCount - 1;
       UpdateModuleCount;
+      FModuleGridMutex := False;
     end;
   finally
     frmNewModule.Free;
   end;
 end;
 
-procedure TfrmMain.ModuleDiscardChangesExecute(Sender: TObject);
-begin
-  ClearModuleInfo;
-  FillModuleData;
-end;
-
 procedure TfrmMain.ModuleRemoveExecute(Sender: TObject);
 begin
-  FModules.Delete(strgrdModules.Row - 1);
+  FModuleGridMutex := True;
+  FModulesWorking.Delete(strgrdModules.Row - 1);
   strgrdModules.DeleteRow(strgrdModules.Row);
   if strgrdModules.Row > 0 then
     strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row)
@@ -529,41 +589,8 @@ begin
     ClearModuleInfo;
   UpdateModuleCount;
   SetModified(True);
-end;
-
-procedure TfrmMain.PluginAcceptChangesExecute(Sender: TObject);
-var
-  i: integer;
-  LabelEd: TLabeledEdit;
-  Modules: TJSONArray = nil;
-  TmpModules: TJSONData;
-begin
-  // Keep modules after plugin info. Part 1
-  TmpModules := FRoot.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
-  if TmpModules <> nil then
-  begin
-    Modules := TmpModules.Clone as TJSONArray;
-    FRoot.Delete(ArrayManifestKeywords[iModules]);
-  end;
-
-  for i := 0 to scrlboxPlugin.ControlCount - 1 do
-    if scrlboxPlugin.Controls[i] is TLabeledEdit then
-    begin
-      LabelEd := scrlboxPlugin.Controls[i] as TLabeledEdit;
-      UpdateField(FRoot, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
-    end;
-
-  // Keep modules after plugin info. Part 2
-  if Modules <> nil then
-    FRoot.Add(ArrayManifestKeywords[iModules], Modules);
-
-  SetModified(True);
-end;
-
-procedure TfrmMain.PluginDiscardChangesExecute(Sender: TObject);
-begin
-  ClearPluginInfo;
-  FillPluginData;
+  FChangesCommited := False;
+  FModuleGridMutex := False;
 end;
 
 procedure TfrmMain.ProgramOptionsExecute(Sender: TObject);
@@ -584,12 +611,56 @@ begin
   end;
 end;
 
+procedure TfrmMain.StatusBarDrawPanel(TheStatusBar: TStatusBar;
+  Panel: TStatusPanel; const Rect: TRect);
+const
+  sDefault = 'default';
+begin
+  if Panel.Index = iStatusPanelErrors then
+  begin
+    StatusBar.Canvas.Font.Name := sDefault;
+
+    StatusBar.Canvas.Font.Color := clRed;
+    StatusBar.Canvas.Font.Size := 0;
+    StatusBar.Canvas.Font.Style := [fsBold];
+    StatusBar.Canvas.Brush.Color := clDefault;
+    StatusBar.Canvas.FillRect(Rect);
+    if FInvalidPluginInfo then
+      StatusBar.Canvas.TextRect(Rect, Rect.Left, Rect.Top + 2, rsErrorPlugin);
+    if not FErrorModules.IsEmpty then
+      StatusBar.Canvas.TextRect(Rect, Rect.Left, Rect.Top + 2, rsErrorModule);
+  end;
+end;
+
 procedure TfrmMain.strgrdModulesAfterSelection(Sender: TObject; aCol, aRow: integer);
 begin
   ClearModuleInfo;
   if strgrdModules.RowCount > 1 then
     FillModuleData;
   ModuleRemove.Enabled := CheckCanDeleteModule;
+  FModuleGridMutex := False;
+end;
+
+procedure TfrmMain.strgrdModulesBeforeSelection(Sender: TObject; aCol, aRow: integer);
+begin
+  FModuleGridMutex := True;
+end;
+
+procedure TfrmMain.strgrdModulesCheckboxToggled(Sender: TObject;
+  aCol, aRow: integer; aState: TCheckboxState);
+var
+  ModuleData: TJSONObject;
+begin
+  if FModuleGridMutex then
+    Exit;
+  if aCol = iColumnHidden then
+  begin
+    ModuleData := FModulesWorking.Items[strgrdModules.Row - 1] as TJSONObject;
+    UpdateBooleanField(ModuleData, ArrayManifestKeywords[iHidden],
+      ArrayChecboxBooleans[aState]);
+  end;
+  SetModified(True);
+  FChangesCommited := False;
 end;
 
 procedure TfrmMain.strgrdModulesColRowDeleted(Sender: TObject;
@@ -627,11 +698,22 @@ begin
   Result := (lbledPluginSlug.Text <> EmptyStr) and
     (lbledPluginName.Text <> EmptyStr) and (lbledPluginVersion.Text <> EmptyStr) and
     (lbledPluginLicense.Text <> EmptyStr) and (lbledPluginAuthor.Text <> EmptyStr);
+  FInvalidPluginInfo := not Result;
+  DataCommitChanges.Enabled := not FInvalidPluginInfo and (FErrorModules.Size = 0);
+  FileSaveAs.Enabled := DataCommitChanges.Enabled;
+  StatusBar.Invalidate;
 end;
 
 function TfrmMain.CheckValidModule: boolean;
 begin
   Result := (lbledModuleName.Text <> EmptyStr) and (lbledModuleSlug.Text <> EmptyStr);
+  if Result then
+    FErrorModules.Delete(strgrdModules.Row)
+  else
+    FErrorModules.Insert(strgrdModules.Row);
+  DataCommitChanges.Enabled := not FInvalidPluginInfo and (FErrorModules.Size = 0);
+  FileSaveAs.Enabled := DataCommitChanges.Enabled;
+  StatusBar.Invalidate;
 end;
 
 procedure TfrmMain.ClearData;
@@ -665,17 +747,40 @@ end;
 
 function TfrmMain.DoModifiedQuery: boolean;
 var
+  CanContinue: boolean = True;
+  ValidManifest: boolean;
   Choice: integer;
 begin
   Result := True;
-  if FModified then
+  ValidManifest := not (FInvalidPluginInfo or (FErrorModules.Size > 0));
+  if FModified or not FChangesCommited then
   begin
-    Choice := Application.MessageBox(PChar(rsQuestionModified),
-      PChar(rsQuestionModifedTitle), MB_YESNOCANCEL + MB_ICONQUESTION);
-    if Choice = idYes then
-      FileSaveAs.Execute;
-    if Choice = idCancel then
-      Result := False;
+    if not FChangesCommited then
+    begin
+      Choice := Application.MessageBox(PChar(rsQuestionUncommited),
+        PChar(rsQuestionUncommitedTitle), MB_YESNO + MB_ICONQUESTION);
+      if Choice = idYes then
+        CanContinue := False;
+    end;
+
+    if CanContinue and not ValidManifest then
+    begin
+      CanContinue := False;
+      Choice := Application.MessageBox(PChar(rsQuestionInvalidManifest),
+        PChar(rsQuestionInvalidManifestTitle), MB_YESNO + MB_ICONERROR);
+      if Choice = idYes then
+        Exit(False);
+    end;
+
+    if CanContinue then
+    begin
+      Choice := Application.MessageBox(PChar(rsQuestionModified),
+        PChar(rsQuestionModifedTitle), MB_YESNOCANCEL + MB_ICONQUESTION);
+      if Choice = idYes then
+        FileSaveAs.Execute;
+      if Choice = idCancel then
+        Result := False;
+    end;
   end;
 end;
 
@@ -686,7 +791,7 @@ var
   ModuleData: TJSONData;
   Tags: TJSONArray;
 begin
-  ModuleData := FModules.Items[strgrdModules.Row - 1];
+  ModuleData := FModulesWorking.Items[strgrdModules.Row - 1];
   FillTextBox(ModuleData, ArrayManifestKeywords[iSlug], lbledModuleSlug);
   FillTextBox(ModuleData, ArrayManifestKeywords[iName], lbledModuleName);
   FillTextBox(ModuleData, ArrayManifestKeywords[iDescription], lbledModuleDescription);
@@ -708,12 +813,12 @@ var
   HiddenValue: variant;
   Value: variant;
 begin
-  for Module := 0 to FModules.Count - 1 do
-    if FindData(FModules.Items[Module], ArrayManifestKeywords[iSlug],
+  for Module := 0 to FModulesWorking.Count - 1 do
+    if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iSlug],
       Value, varString) then
     begin
       IsHidden := False;
-      if FindData(FModules.Items[Module], ArrayManifestKeywords[iHidden],
+      if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iHidden],
         HiddenValue, varBoolean) then
         IsHidden := HiddenValue;
       strgrdModules.InsertRowWithValues(strgrdModules.RowCount,
@@ -724,21 +829,23 @@ end;
 
 procedure TfrmMain.FillPluginData;
 begin
-  FillTextBox(FRoot, ArrayManifestKeywords[iSlug], lbledPluginSlug);
-  FillTextBox(FRoot, ArrayManifestKeywords[iName], lbledPluginName);
-  FillTextBox(FRoot, ArrayManifestKeywords[iVersion], lbledPluginVersion);
-  FillTextBox(FRoot, ArrayManifestKeywords[iLicense], lbledPluginLicense);
-  FillTextBox(FRoot, ArrayManifestKeywords[iBrand], lbledPluginBrand);
-  FillTextBox(FRoot, ArrayManifestKeywords[iDescription], lbledPluginDescription);
-  FillTextBox(FRoot, ArrayManifestKeywords[iAuthor], lbledPluginAuthor);
-  FillTextBox(FRoot, ArrayManifestKeywords[iAuthorEmail], lbledPluginAuthorEmail);
-  FillTextBox(FRoot, ArrayManifestKeywords[iAuthorURL], lbledPluginAuthorURL);
-  FillTextBox(FRoot, ArrayManifestKeywords[iPluginURL], lbledPluginURL);
-  FillTextBox(FRoot, ArrayManifestKeywords[iManualURL], lbledPluginManualURL);
-  FillTextBox(FRoot, ArrayManifestKeywords[iSourceURL], lbledPluginSourceURL);
-  FillTextBox(FRoot, ArrayManifestKeywords[iDonateURL], lbledPluginDonateURL);
-  FillTextBox(FRoot, ArrayManifestKeywords[iChangeLogURL], lbledPluginChangelogURL);
-  FillTextBox(FRoot, ArrayManifestKeywords[iMinRackVersion], lbledPluginMinRackVersion);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iSlug], lbledPluginSlug);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iName], lbledPluginName);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iVersion], lbledPluginVersion);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iLicense], lbledPluginLicense);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iBrand], lbledPluginBrand);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iDescription], lbledPluginDescription);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iAuthor], lbledPluginAuthor);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iAuthorEmail], lbledPluginAuthorEmail);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iAuthorURL], lbledPluginAuthorURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iPluginURL], lbledPluginURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iManualURL], lbledPluginManualURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iSourceURL], lbledPluginSourceURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iDonateURL], lbledPluginDonateURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iChangeLogURL],
+    lbledPluginChangelogURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[iMinRackVersion],
+    lbledPluginMinRackVersion);
 end;
 
 procedure TfrmMain.FillTags(Tags: TJSONArray);
@@ -799,11 +906,15 @@ end;
 
 procedure TfrmMain.FreeObjects;
 begin
-  if Assigned(FRoot) then
+  if Assigned(FRootWorking) then
   begin
-    FreeAndNil(FRoot);
-    FModules := nil;
+    FreeAndNil(FRootWorking);
+    FModulesWorking := nil;
   end;
+  if Assigned(FPluginBase) then
+    FreeAndNil(FPluginBase);
+  if Assigned(FErrorModules) then
+    FreeAndNil(FErrorModules);
 end;
 
 procedure TfrmMain.LoadConfig;
@@ -875,8 +986,22 @@ begin
   imgInstructions.Visible := not EnableGUI;
 end;
 
-procedure TfrmMain.UpdateField(TheRoot: TJSONObject; const Path: TJSONStringType;
-  LabelEd: TLabeledEdit);
+procedure TfrmMain.UpdateBooleanField(TheRoot: TJSONObject;
+  const Path: TJSONStringType; AValue: boolean);
+begin
+  if TheRoot.FindPath(Path) <> nil then
+  begin
+    if AValue then
+      TheRoot.Elements[Path].AsBoolean := AValue
+    else
+      TheRoot.Delete(Path);
+  end
+  else if AValue then
+    TheRoot.Add(Path, AValue);
+end;
+
+procedure TfrmMain.UpdateStringField(TheRoot: TJSONObject;
+  const Path: TJSONStringType; LabelEd: TLabeledEdit);
 begin
   if TheRoot.FindPath(Path) <> nil then
   begin
@@ -891,8 +1016,9 @@ end;
 
 procedure TfrmMain.UpdateModuleCount;
 begin
-  if FModules <> nil then
-    ChangePanelText(iStatusPanelModuleCount, Format(sModuleCount, [FModules.Count]))
+  if FModulesWorking <> nil then
+    ChangePanelText(iStatusPanelModuleCount, Format(sModuleCount,
+      [FModulesWorking.Count]))
   else
     ChangePanelText(iStatusPanelModuleCount, Format(sModuleCount, [0]));
 end;

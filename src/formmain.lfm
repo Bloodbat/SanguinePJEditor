@@ -87,6 +87,24 @@ object frmMain: TfrmMain
       Top = 2
       Action = ProgramOptions
     end
+    object ToolButton1: TToolButton
+      Left = 182
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton1'
+      Style = tbsDivider
+    end
+    object tbCommitChanges: TToolButton
+      Left = 187
+      Top = 2
+      Action = DataCommitChanges
+      Enabled = False
+    end
+    object tbDiscardChanges: TToolButton
+      Left = 210
+      Top = 2
+      Action = DataDiscardChanges
+    end
   end
   object StatusBar: TStatusBar
     Left = 0
@@ -98,15 +116,20 @@ object frmMain: TfrmMain
         Width = 300
       end    
       item
+        Style = psOwnerDraw
+        Width = 250
+      end    
+      item
         Alignment = taCenter
         Width = 30
       end    
       item
         Alignment = taRightJustify
-        Width = 50
+        Width = 100
       end>
     SimplePanel = False
     SizeGrip = False
+    OnDrawPanel = StatusBarDrawPanel
   end
   object pgctrlPlugin: TPageControl
     Left = 0
@@ -123,21 +146,21 @@ object frmMain: TfrmMain
       ClientWidth = 752
       object scrlboxPlugin: TScrollBox
         Left = 0
-        Height = 461
+        Height = 507
         Top = 8
         Width = 752
         HorzScrollBar.Page = 88
         HorzScrollBar.Smooth = True
         HorzScrollBar.Tracking = True
-        VertScrollBar.Increment = 46
-        VertScrollBar.Page = 461
+        VertScrollBar.Increment = 50
+        VertScrollBar.Page = 507
         VertScrollBar.Smooth = True
         VertScrollBar.Tracking = True
         Align = alClient
         BorderSpacing.Top = 8
         BorderSpacing.Bottom = 8
         BorderStyle = bsNone
-        ClientHeight = 461
+        ClientHeight = 507
         ClientWidth = 735
         TabOrder = 0
         object lbledPluginSlug: TLabeledEdit
@@ -367,42 +390,6 @@ object frmMain: TfrmMain
           OnChange = HandlePluginEditorsChange
         end
       end
-      object pnlPluginDataControls: TPanel
-        Left = 0
-        Height = 46
-        Top = 477
-        Width = 752
-        Align = alBottom
-        BorderSpacing.Top = 8
-        BevelOuter = bvNone
-        ClientHeight = 46
-        ClientWidth = 752
-        TabOrder = 1
-        object btnAcceptPluginChanges: TBitBtn
-          Left = 656
-          Height = 30
-          Top = 8
-          Width = 88
-          Action = PluginAcceptChanges
-          Anchors = [akRight, akBottom]
-          BorderSpacing.Around = 8
-          Images = ImagesDataModule.ImageList1
-          ImageIndex = 9
-          TabOrder = 0
-        end
-        object btnCancelPluginChanges: TBitBtn
-          Left = 560
-          Height = 30
-          Top = 8
-          Width = 88
-          Action = PluginDiscardChanges
-          Anchors = [akRight, akBottom]
-          BorderSpacing.Around = 8
-          Images = ImagesDataModule.ImageList1
-          ImageIndex = 10
-          TabOrder = 1
-        end
-      end
     end
     object tabModules: TTabSheet
       Caption = 'Modules'
@@ -471,6 +458,8 @@ object frmMain: TfrmMain
           TitleStyle = tsNative
           UseXORFeatures = True
           OnAfterSelection = strgrdModulesAfterSelection
+          OnBeforeSelection = strgrdModulesBeforeSelection
+          OnCheckboxToggled = strgrdModulesCheckboxToggled
           OnColRowDeleted = strgrdModulesColRowDeleted
           ColWidths = (
             134
@@ -494,284 +483,238 @@ object frmMain: TfrmMain
         ClientHeight = 523
         ClientWidth = 555
         TabOrder = 2
-        object pnlModuleDataControls: TPanel
+        object scrlboxModuleInfo: TScrollBox
           Left = 0
-          Height = 46
-          Top = 477
-          Width = 555
-          Align = alBottom
-          BorderSpacing.Top = 8
-          BevelOuter = bvNone
-          ClientHeight = 46
-          ClientWidth = 555
-          TabOrder = 0
-          object btnAcceptPluginChanges1: TBitBtn
-            Left = 459
-            Height = 30
-            Top = 8
-            Width = 88
-            Action = ModuleAcceptChanges
-            Anchors = [akRight, akBottom]
-            BorderSpacing.Around = 8
-            Images = ImagesDataModule.ImageList1
-            ImageIndex = 9
-            TabOrder = 0
-          end
-          object btnCancelPluginChanges1: TBitBtn
-            Left = 363
-            Height = 30
-            Top = 8
-            Width = 88
-            Action = ModuleDiscardChanges
-            Anchors = [akRight, akBottom]
-            BorderSpacing.Around = 8
-            Images = ImagesDataModule.ImageList1
-            ImageIndex = 10
-            TabOrder = 1
-          end
-        end
-        object pnlModuleData: TPanel
-          Left = 0
-          Height = 469
+          Height = 337
           Top = 0
           Width = 555
+          HorzScrollBar.Smooth = True
+          HorzScrollBar.Tracking = True
+          VertScrollBar.Increment = 33
+          VertScrollBar.Page = 335
+          VertScrollBar.Smooth = True
+          VertScrollBar.Tracking = True
           Align = alClient
-          BevelOuter = bvNone
-          ClientHeight = 469
+          BorderSpacing.Bottom = 8
+          BorderStyle = bsNone
+          ClientHeight = 337
           ClientWidth = 555
-          TabOrder = 1
-          object scrlboxModuleInfo: TScrollBox
-            Left = 0
-            Height = 339
-            Top = 0
-            Width = 555
-            HorzScrollBar.Smooth = True
-            HorzScrollBar.Tracking = True
-            VertScrollBar.Increment = 33
-            VertScrollBar.Page = 335
-            VertScrollBar.Smooth = True
-            VertScrollBar.Tracking = True
-            Align = alClient
-            BorderSpacing.Bottom = 8
-            BorderStyle = bsNone
-            ClientHeight = 339
-            ClientWidth = 555
+          TabOrder = 0
+          object lbledModuleSlug: TLabeledEdit
+            Left = 8
+            Height = 23
+            Top = 32
+            Width = 536
+            Anchors = [akTop, akLeft, akRight]
+            AutoSize = False
+            EditLabel.Height = 15
+            EditLabel.Width = 536
+            EditLabel.Caption = 'Slug (Required)'
+            LabelSpacing = 8
             TabOrder = 0
-            object lbledModuleSlug: TLabeledEdit
-              Left = 8
-              Height = 23
-              Top = 32
-              Width = 536
-              Anchors = [akTop, akLeft, akRight]
-              AutoSize = False
-              EditLabel.Height = 15
-              EditLabel.Width = 536
-              EditLabel.Caption = 'Slug (Required)'
-              LabelSpacing = 8
-              TabOrder = 0
-              OnChange = HandleModuleEditorsChange
-            end
-            object lbledModuleName: TLabeledEdit
-              Tag = 1
-              Left = 8
-              Height = 23
-              Top = 88
-              Width = 536
-              Anchors = [akTop, akLeft, akRight]
-              AutoSize = False
-              EditLabel.Height = 15
-              EditLabel.Width = 536
-              EditLabel.Caption = 'Name (Required)'
-              LabelSpacing = 8
-              TabOrder = 1
-              OnChange = HandleModuleEditorsChange
-            end
-            object lbledModuleDescription: TLabeledEdit
-              Tag = 6
-              Left = 8
-              Height = 23
-              Top = 144
-              Width = 536
-              Anchors = [akTop, akLeft, akRight]
-              AutoSize = False
-              EditLabel.Height = 15
-              EditLabel.Width = 536
-              EditLabel.Caption = 'Description'
-              LabelSpacing = 8
-              TabOrder = 2
-              OnChange = HandleModuleEditorsChange
-            end
-            object lbledModuleKeywords: TLabeledEdit
-              Tag = 17
-              Left = 8
-              Height = 23
-              Top = 200
-              Width = 536
-              Anchors = [akTop, akLeft, akRight]
-              AutoSize = False
-              EditLabel.Height = 15
-              EditLabel.Width = 536
-              EditLabel.Caption = 'Keywords'
-              LabelSpacing = 8
-              TabOrder = 3
-              OnChange = HandleModuleEditorsChange
-            end
-            object lbledModuleManualURL: TLabeledEdit
-              Tag = 11
-              Left = 8
-              Height = 23
-              Top = 256
-              Width = 536
-              Anchors = [akTop, akLeft, akRight]
-              AutoSize = False
-              EditLabel.Height = 15
-              EditLabel.Width = 536
-              EditLabel.Caption = 'Manual URL'
-              LabelSpacing = 8
-              TabOrder = 4
-              OnChange = HandleModuleEditorsChange
-            end
-            object lbledModuleModularGridURL: TLabeledEdit
-              Tag = 18
-              Left = 8
-              Height = 23
-              Top = 312
-              Width = 536
-              Anchors = [akTop, akLeft, akRight]
-              AutoSize = False
-              EditLabel.Height = 15
-              EditLabel.Width = 536
-              EditLabel.Caption = 'Modular Grid URL'
-              LabelSpacing = 8
-              TabOrder = 5
-              OnChange = HandleModuleEditorsChange
-            end
+            OnChange = HandleModuleEditorsChange
           end
-          object scrlboxModuleTags: TScrollBox
-            Left = 0
-            Height = 109
-            Top = 360
-            Width = 555
-            HorzScrollBar.Increment = 47
-            HorzScrollBar.Page = 471
-            HorzScrollBar.Smooth = True
-            HorzScrollBar.Tracking = True
-            VertScrollBar.Increment = 10
-            VertScrollBar.Page = 109
-            VertScrollBar.Smooth = True
-            VertScrollBar.Tracking = True
-            Align = alBottom
-            BorderSpacing.Top = 8
-            BorderStyle = bsNone
-            ClientHeight = 109
-            ClientWidth = 538
+          object lbledModuleName: TLabeledEdit
+            Tag = 1
+            Left = 8
+            Height = 23
+            Top = 88
+            Width = 536
+            Anchors = [akTop, akLeft, akRight]
+            AutoSize = False
+            EditLabel.Height = 15
+            EditLabel.Width = 536
+            EditLabel.Caption = 'Name (Required)'
+            LabelSpacing = 8
             TabOrder = 1
-            object chkgrpTags: TCheckGroup
-              Left = 8
-              Height = 537
-              Top = 0
-              Width = 522
-              Align = alClient
-              AutoFill = True
-              AutoSize = True
-              BorderSpacing.Left = 8
-              BorderSpacing.Right = 8
-              BorderSpacing.Bottom = 8
-              Caption = 'Tags'
-              ChildSizing.LeftRightSpacing = 6
-              ChildSizing.TopBottomSpacing = 6
-              ChildSizing.HorizontalSpacing = 8
-              ChildSizing.VerticalSpacing = 8
-              ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-              ChildSizing.EnlargeVertical = crsHomogenousChildResize
-              ChildSizing.ShrinkHorizontal = crsScaleChilds
-              ChildSizing.ShrinkVertical = crsScaleChilds
-              ChildSizing.Layout = cclLeftToRightThenTopToBottom
-              ChildSizing.ControlsPerLine = 3
-              ClientHeight = 517
-              ClientWidth = 518
-              Columns = 3
-              Items.Strings = (
-                'Arpeggiator'
-                'Attenuator'
-                'Blank'
-                'Chorus'
-                'Clock generator'
-                'Clock modulator'
-                'Compressor'
-                'Controller'
-                'Delay'
-                'Digital'
-                'Distortion'
-                'Drum'
-                'Dual'
-                'Dynamics'
-                'Effect'
-                'Envelope follower'
-                'Envelope generator'
-                'Equalizer'
-                'Expander'
-                'External'
-                'Filter'
-                'Flanger'
-                'Function generator'
-                'Granular'
-                'Hardware clone'
-                'Limiter'
-                'Logic'
-                'Low-frequency oscillator'
-                'Low-pass gate'
-                'MIDI'
-                'Mixer'
-                'Multiple'
-                'Noise'
-                'Oscillator'
-                'Panning'
-                'Phaser'
-                'Physical modeling'
-                'Polyphonic'
-                'Quad'
-                'Quantizer'
-                'Random'
-                'Recording'
-                'Reverb'
-                'Ring modulator'
-                'Sample and hold'
-                'Sampler'
-                'Sequencer'
-                'Slew limiter'
-                'Speech'
-                'Switch'
-                'Synth voice'
-                'Tuner'
-                'Utility'
-                'Visual'
-                'Vocoder'
-                'Voltage-controlled amplifier'
-                'Waveshaper'
-              )
-              TabOrder = 0
-              Data = {
-                3900000002020202020202020202020202020202020202020202020202020202
-                0202020202020202020202020202020202020202020202020202020202
-              }
-            end
+            OnChange = HandleModuleEditorsChange
           end
-          object Splitter2: TSplitter
-            Cursor = crVSplit
-            Left = 0
-            Height = 5
-            Top = 347
-            Width = 555
-            Align = alBottom
-            ResizeAnchor = akBottom
+          object lbledModuleDescription: TLabeledEdit
+            Tag = 6
+            Left = 8
+            Height = 23
+            Top = 144
+            Width = 536
+            Anchors = [akTop, akLeft, akRight]
+            AutoSize = False
+            EditLabel.Height = 15
+            EditLabel.Width = 536
+            EditLabel.Caption = 'Description'
+            LabelSpacing = 8
+            TabOrder = 2
+            OnChange = HandleModuleEditorsChange
           end
+          object lbledModuleKeywords: TLabeledEdit
+            Tag = 17
+            Left = 8
+            Height = 23
+            Top = 200
+            Width = 536
+            Anchors = [akTop, akLeft, akRight]
+            AutoSize = False
+            EditLabel.Height = 15
+            EditLabel.Width = 536
+            EditLabel.Caption = 'Keywords'
+            LabelSpacing = 8
+            TabOrder = 3
+            OnChange = HandleModuleEditorsChange
+          end
+          object lbledModuleManualURL: TLabeledEdit
+            Tag = 11
+            Left = 8
+            Height = 23
+            Top = 256
+            Width = 536
+            Anchors = [akTop, akLeft, akRight]
+            AutoSize = False
+            EditLabel.Height = 15
+            EditLabel.Width = 536
+            EditLabel.Caption = 'Manual URL'
+            LabelSpacing = 8
+            TabOrder = 4
+            OnChange = HandleModuleEditorsChange
+          end
+          object lbledModuleModularGridURL: TLabeledEdit
+            Tag = 18
+            Left = 8
+            Height = 23
+            Top = 312
+            Width = 536
+            Anchors = [akTop, akLeft, akRight]
+            AutoSize = False
+            EditLabel.Height = 15
+            EditLabel.Width = 536
+            EditLabel.Caption = 'Modular Grid URL'
+            LabelSpacing = 8
+            TabOrder = 5
+            OnChange = HandleModuleEditorsChange
+          end
+        end
+        object scrlboxModuleTags: TScrollBox
+          Left = 0
+          Height = 165
+          Top = 358
+          Width = 555
+          HorzScrollBar.Increment = 47
+          HorzScrollBar.Page = 471
+          HorzScrollBar.Smooth = True
+          HorzScrollBar.Tracking = True
+          VertScrollBar.Increment = 16
+          VertScrollBar.Page = 165
+          VertScrollBar.Smooth = True
+          VertScrollBar.Tracking = True
+          Align = alBottom
+          BorderSpacing.Top = 8
+          BorderStyle = bsNone
+          ClientHeight = 165
+          ClientWidth = 538
+          TabOrder = 1
+          object chkgrpTags: TCheckGroup
+            Left = 8
+            Height = 537
+            Top = 0
+            Width = 522
+            Align = alClient
+            AutoFill = True
+            AutoSize = True
+            BorderSpacing.Left = 8
+            BorderSpacing.Right = 8
+            BorderSpacing.Bottom = 8
+            Caption = 'Tags'
+            ChildSizing.LeftRightSpacing = 6
+            ChildSizing.TopBottomSpacing = 6
+            ChildSizing.HorizontalSpacing = 8
+            ChildSizing.VerticalSpacing = 8
+            ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+            ChildSizing.EnlargeVertical = crsHomogenousChildResize
+            ChildSizing.ShrinkHorizontal = crsScaleChilds
+            ChildSizing.ShrinkVertical = crsScaleChilds
+            ChildSizing.Layout = cclLeftToRightThenTopToBottom
+            ChildSizing.ControlsPerLine = 3
+            ClientHeight = 517
+            ClientWidth = 518
+            Columns = 3
+            Items.Strings = (
+              'Arpeggiator'
+              'Attenuator'
+              'Blank'
+              'Chorus'
+              'Clock generator'
+              'Clock modulator'
+              'Compressor'
+              'Controller'
+              'Delay'
+              'Digital'
+              'Distortion'
+              'Drum'
+              'Dual'
+              'Dynamics'
+              'Effect'
+              'Envelope follower'
+              'Envelope generator'
+              'Equalizer'
+              'Expander'
+              'External'
+              'Filter'
+              'Flanger'
+              'Function generator'
+              'Granular'
+              'Hardware clone'
+              'Limiter'
+              'Logic'
+              'Low-frequency oscillator'
+              'Low-pass gate'
+              'MIDI'
+              'Mixer'
+              'Multiple'
+              'Noise'
+              'Oscillator'
+              'Panning'
+              'Phaser'
+              'Physical modeling'
+              'Polyphonic'
+              'Quad'
+              'Quantizer'
+              'Random'
+              'Recording'
+              'Reverb'
+              'Ring modulator'
+              'Sample and hold'
+              'Sampler'
+              'Sequencer'
+              'Slew limiter'
+              'Speech'
+              'Switch'
+              'Synth voice'
+              'Tuner'
+              'Utility'
+              'Visual'
+              'Vocoder'
+              'Voltage-controlled amplifier'
+              'Waveshaper'
+            )
+            OnItemClick = chkgrpTagsItemClick
+            TabOrder = 0
+            Data = {
+              3900000002020202020202020202020202020202020202020202020202020202
+              0202020202020202020202020202020202020202020202020202020202
+            }
+          end
+        end
+        object Splitter2: TSplitter
+          Cursor = crVSplit
+          Left = 0
+          Height = 5
+          Top = 345
+          Width = 555
+          Align = alBottom
+          ResizeAnchor = akBottom
         end
       end
     end
   end
   object imgInstructions: TImage
-    Left = 8
+    Left = 456
     Height = 146
     Top = 32
     Width = 292
@@ -1376,36 +1319,6 @@ object frmMain: TfrmMain
       ImageIndex = 8
       OnExecute = ModuleRemoveExecute
     end
-    object PluginAcceptChanges: TAction
-      Category = 'Plugin'
-      Caption = '&Commit'
-      Enabled = False
-      Hint = 'Apply plugin changes to manifest.'
-      ImageIndex = 9
-      OnExecute = PluginAcceptChangesExecute
-    end
-    object PluginDiscardChanges: TAction
-      Category = 'Plugin'
-      Caption = '&Discard'
-      Hint = 'Undo latest plugin changes.'
-      ImageIndex = 10
-      OnExecute = PluginDiscardChangesExecute
-    end
-    object ModuleAcceptChanges: TAction
-      Category = 'Module'
-      Caption = '&Commit'
-      Enabled = False
-      Hint = 'Apply current module changes to manifest.'
-      ImageIndex = 9
-      OnExecute = ModuleAcceptChangesExecute
-    end
-    object ModuleDiscardChanges: TAction
-      Category = 'Module'
-      Caption = '&Discard'
-      Hint = 'Undo latest module changes.'
-      ImageIndex = 10
-      OnExecute = ModuleDiscardChangesExecute
-    end
     object FileNew: TAction
       Category = 'File'
       Caption = '&New ...'
@@ -1445,6 +1358,20 @@ object frmMain: TfrmMain
       Hint = 'Open the program options dialog.'
       ImageIndex = 11
       OnExecute = ProgramOptionsExecute
+    end
+    object DataCommitChanges: TAction
+      Category = 'Data'
+      Caption = '&Commit Changes'
+      Hint = 'Commit changes to the working plugin manifest.'
+      ImageIndex = 9
+      OnExecute = DataCommitChangesExecute
+    end
+    object DataDiscardChanges: TAction
+      Category = 'Data'
+      Caption = '&Discard Changes'
+      Hint = 'Discard changes to the working plugin manifest.'
+      ImageIndex = 10
+      OnExecute = DataDiscardChangesExecute
     end
   end
   object OpenDialog: TOpenDialog
