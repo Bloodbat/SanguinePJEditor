@@ -24,6 +24,6 @@
 const
   ProgramName = 'Sanguine PJ Editor';
   ProgramMajor = 1;
-  ProgramMinor = 0;
+  ProgramMinor = 1;
   ProgramRevision = 0;
   SVN = False;
