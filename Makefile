@@ -47,11 +47,13 @@ endif
 ifdef ARCH_WIN
 LIBFOLDER = lib\x86_64-win64
 COMPILERFLAGS += -Fi$(LIBFOLDER) -FU$(LIBFOLDER) -Px86_64 -CpCOREAVX -obin\sanguinetagupdater.exe
+MKDIRCMD = md
 endif
 
 ifdef ARCH_LIN
 LIBFOLDER = lib/x86_64-linux
 COMPILERFLAGS += -Cg -Fi$(LIBFOLDER) -FU$(LIBFOLDER) -Px86_64 -CpCOREAVX -obin/sanguinetagupdater
+MKDIRCMD = mkdir
 endif
 
 ifdef ARCH_MAC
@@ -65,24 +67,24 @@ all: sanguinetagupdater rackpjeditor
 
 ifndef ARCH_MAC
 sanguinetagupdater:
-	-md lib
-	-md $(LIBFOLDER)
-	-md bin
+	-$(MKDIRCMD) lib
+	-$(MKDIRCMD) $(LIBFOLDER)
+	-$(MKDIRCMD) bin
 	fpc $(COMPILERFLAGS) $(EXTRAFLAGS) sanguinetagupdater.pas
 
 rackpjeditor:
-	-md lib
-	-md $(LIBFOLDER)
-	-md bin
+	-$(MKDIRCMD) lib
+	-$(MKDIRCMD) $(LIBFOLDER)
+	-$(MKDIRCMD) bin
 	lazbuild --bm="Release Intel x64" pjeditor.lpi
 endif
 
 ifdef ARCH_MAC
 sanguinetagupdater:
-	-md lib
-	-md $(LIBX64FOLDER)
-	-md $(LIBARMFOLDER)
-	-md bin
+	-mkdir lib
+	-mkdir $(LIBX64FOLDER)
+	-mkdir $(LIBARMFOLDER)
+	-mkdir bin
 ifndef NOINTEL
 	fpc $(COMPILERFLAGS) $(COMPILERFLAGSX64) $(EXTRAFLAGS) sanguinetagupdater.pas
 endif
@@ -99,10 +101,10 @@ endif
 	@echo codesign should be here!
 
 rackpjeditor:
-	-md lib
-	-md $(LIBX64FOLDER)
-	-md $(LIBARMFOLDER)
-	-md bin
+	-mkdir lib
+	-mkdir $(LIBX64FOLDER)
+	-mkdir $(LIBARMFOLDER)
+	-mkdir bin
 ifndef NOINTEL
 	lazbuild --bm="Release MacOS Intel" pjeditor.lpi
 endif
