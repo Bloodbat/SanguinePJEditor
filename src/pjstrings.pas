@@ -90,8 +90,11 @@ resourcestring
   rsAboutGNU3 = 'Click the "License" item in the "Help" menu for more information.';
 
   // Status
-  rsStatusReady = 'Ready';
+  rsStatusApplying = 'Applying...';
   rsStatusLoading = 'Loading...';
+  rsStatusNewManifest = 'New manifest...';
+  rsStatusReady = 'Ready';
+  rsStatusReverting = 'Reverting...';
   rsStatusSaving = 'Saving...';
 
   // Errors
@@ -99,19 +102,20 @@ resourcestring
   rsErrorInvalidJSon = 'Invalid or corrupt json manifest.' + LineEnding + 'Aborting.';
 
   // Queries
+  rsQuestionInvalidManifest =
+    'The manifest cannot be saved.' + LineEnding +
+    'If you continue, all changes will be lost' + LineEnding +
+    'Cancel the operation so you can fix it?';
+  rsQuestionInvalidManifestTitle = 'Invalid Manifest Found';
   rsQuestionModified = 'Save changes to manifest?';
   rsQuestionModifedTitle = 'Manifest Changed';
   rsQuestionUncommited = 'If you continue, the most recent changes will be lost.' +
     LineEnding + 'Cancel the operation so you can commit them?';
   rsQuestionUncommitedTitle = 'Uncommited Changes Found';
-  rsQuestionInvalidManifest = 'The manifest cannot be saved.' +
-    LineEnding + 'If you continue, all changes will be lost' +
-    LineEnding + 'Cancel the operation so you can fix it?';
-  rsQuestionInvalidManifestTitle = 'Invalid Manifest Found';
 
   // Info. Errors
-  rsErrorPlugin = 'Invalid Plugin Info.';
   rsErrorModule = 'Invalid Module Info.';
+  rsErrorPlugin = 'Invalid Plugin Info.';
 
 implementation
 

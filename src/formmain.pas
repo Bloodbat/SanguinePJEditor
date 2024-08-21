@@ -261,6 +261,77 @@ const
 
   { TfrmMain }
 
+procedure TfrmMain.chkgrpTagsItemClick(Sender: TObject; Index: integer);
+var
+  i: integer;
+  ModuleData: TJSONObject;
+  Tags: TJSONArray;
+begin
+  if FModuleGridMutex then
+    Exit;
+  ModuleData := FModulesWorking.Items[strgrdModules.Row - 1] as TJSONObject;
+  Tags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+  if Tags <> nil then
+  begin
+    ModuleData.Delete(ArrayManifestKeywords[iTags]);
+    Tags := nil;
+  end;
+
+  Tags := TJSONArray.Create;
+
+  for i := 0 to chkgrpTags.Items.Count - 1 do
+    if chkgrpTags.Checked[i] then
+      Tags.Add(chkgrpTags.Items[i]);
+
+  if Tags.Count > 0 then
+    ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
+  SetModified(True);
+  FChangesCommited := False;
+end;
+
+procedure TfrmMain.DataCommitChangesExecute(Sender: TObject);
+begin
+  Cursor := crHourGlass;
+  ChangePanelText(iStatusPanelState, rsStatusApplying);
+  Application.ProcessMessages;
+  FModuleGridMutex := True;
+  FPluginBase.Free;
+  FPluginBase := FRootWorking.Clone as TJSONObject;
+  FChangesCommited := True;
+  FModuleGridMutex := False;
+  ChangePanelText(iStatusPanelState, rsStatusReady);
+  Cursor := crDefault;
+end;
+
+procedure TfrmMain.DataDiscardChangesExecute(Sender: TObject);
+begin
+  Cursor := crHourGlass;
+  ChangePanelText(iStatusPanelState, rsStatusReverting);
+  Application.ProcessMessages;
+  FModuleGridMutex := True;
+  ClearData;
+  FRootWorking.Free;
+  FRootWorking := FPluginBase.Clone as TJSONObject;
+  FillPluginData;
+  FModulesWorking := FRootWorking.FindPath(ArrayManifestKeywords[iModules]) as
+    TJSONArray;
+  if FModulesWorking <> nil then
+  begin
+    FillModuleList;
+    strgrdModules.Row := 1;
+    strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row);
+  end;
+  UpdateModuleCount;
+  FInvalidPluginInfo := False;
+  FErrorModules.Free;
+  FErrorModules := TIntegerSet.Create;
+  FChangesCommited := True;
+  SetModified(True);
+  FModuleGridMutex := False;
+  ChangePanelText(iStatusPanelState, rsStatusReady);
+  Cursor := crDefault;
+end;
+
 procedure TfrmMain.FileNewExecute(Sender: TObject);
 var
   frmNewPlugin: TfrmNewPlugin;
@@ -268,6 +339,8 @@ var
 begin
   if DoModifiedQuery then
   begin
+    ChangePanelText(iStatusPanelState, rsStatusNewManifest);
+    Application.ProcessMessages;
     FModuleGridMutex := True;
     frmNewPlugin := TfrmNewPlugin.Create(nil);
     try
@@ -303,69 +376,9 @@ begin
     finally
       frmNewPlugin.Free;
     end;
+    ChangePanelText(iStatusPanelState, rsStatusReady);
     FModuleGridMutex := False;
   end;
-end;
-
-procedure TfrmMain.chkgrpTagsItemClick(Sender: TObject; Index: integer);
-var
-  i: integer;
-  ModuleData: TJSONObject;
-  Tags: TJSONArray;
-begin
-  if FModuleGridMutex then
-    Exit;
-  ModuleData := FModulesWorking.Items[strgrdModules.Row - 1] as TJSONObject;
-  Tags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
-  if Tags <> nil then
-  begin
-    ModuleData.Delete(ArrayManifestKeywords[iTags]);
-    Tags := nil;
-  end;
-
-  Tags := TJSONArray.Create;
-
-  for i := 0 to chkgrpTags.Items.Count - 1 do
-    if chkgrpTags.Checked[i] then
-      Tags.Add(chkgrpTags.Items[i]);
-
-  if Tags.Count > 0 then
-    ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
-  SetModified(True);
-  FChangesCommited := False;
-end;
-
-procedure TfrmMain.DataCommitChangesExecute(Sender: TObject);
-begin
-  FModuleGridMutex := True;
-  FPluginBase.Free;
-  FPluginBase := FRootWorking.Clone as TJSONObject;
-  FChangesCommited := True;
-  FModuleGridMutex := False;
-end;
-
-procedure TfrmMain.DataDiscardChangesExecute(Sender: TObject);
-begin
-  FModuleGridMutex := True;
-  ClearData;
-  FRootWorking.Free;
-  FRootWorking := FPluginBase.Clone as TJSONObject;
-  FillPluginData;
-  FModulesWorking := FRootWorking.FindPath(ArrayManifestKeywords[iModules]) as
-    TJSONArray;
-  if FModulesWorking <> nil then
-  begin
-    FillModuleList;
-    strgrdModules.Row := 1;
-    strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row);
-  end;
-  UpdateModuleCount;
-  FInvalidPluginInfo := False;
-  FErrorModules.Free;
-  FErrorModules := TIntegerSet.Create;
-  FChangesCommited := True;
-  SetModified(True);
-  FModuleGridMutex := False;
 end;
 
 procedure TfrmMain.FileSafeOpenExecute(Sender: TObject);
