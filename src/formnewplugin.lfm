@@ -9,10 +9,10 @@ object frmNewPlugin: TfrmNewPlugin
   Constraints.MinHeight = 394
   Constraints.MinWidth = 658
   Menu = MainMenu
-  OnShow = FormShow
   Position = poMainFormCenter
   ShowHint = True
-  LCLVersion = '3.5.0.0'
+  LCLVersion = '4.0.0.1'
+  OnShow = FormShow
   object pnlControls: TPanel
     Left = 0
     Height = 46

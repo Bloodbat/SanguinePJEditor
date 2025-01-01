@@ -1,7 +1,7 @@
 {******************************************************************************}
 {                         Sanguine Tag Updater                                 }
 
-{   Copyright (C) 2024
+{   Copyright (C) 2024-2025
     La Serpiente y la Rosa Producciones.                                       }
 
 {   This file is part of Sanguine Tag Updater.                                 }
@@ -180,7 +180,7 @@ type
       'under certain conditions; see LICENSE-GPLv3.txt for details.');
     ArrayProgramHeader: array of string = (
       'Sanguine Tag Updater V.1.0.',
-      'Copyright 2024 Bloodbat.',
+      'Copyright 2024-2025 Bloodbat.',
       'La Serpiente y la Rosa Producciones.'
       );
   var

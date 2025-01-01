@@ -26,7 +26,7 @@
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="1"/>
       <BuildNr Value="1"/>
-      <StringTable CompanyName="La Serpiente y la Rosa Producciones" FileDescription="An editor for VCV Rack&apos;s plugin.json manifests." LegalCopyright="© 2024 La Serpiente y la Rosa Producciones" ProductName="PJ Editor" ProductVersion="1.1"/>
+      <StringTable CompanyName="La Serpiente y la Rosa Producciones" FileDescription="An editor for VCV Rack&apos;s plugin.json manifests." LegalCopyright="© 2024-2025 La Serpiente y la Rosa Producciones" ProductName="PJ Editor" ProductVersion="1.1"/>
     </VersionInfo>
     <BuildModes>
       <Item Name="Release Intel x64" Default="True"/>

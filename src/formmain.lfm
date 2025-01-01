@@ -9,13 +9,13 @@ object frmMain: TfrmMain
   Constraints.MinHeight = 600
   Constraints.MinWidth = 600
   Menu = MainMenu
+  Position = poDefault
+  ShowHint = True
+  LCLVersion = '4.0.0.1'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
-  Position = poDefault
-  ShowHint = True
-  LCLVersion = '3.5.0.0'
   object ToolBarCommon: TToolBar
     Left = 3
     Height = 26
@@ -693,8 +693,8 @@ object frmMain: TfrmMain
               'Voltage-controlled amplifier'
               'Waveshaper'
             )
-            OnItemClick = chkgrpTagsItemClick
             TabOrder = 0
+            OnItemClick = chkgrpTagsItemClick
             Data = {
               3900000002020202020202020202020202020202020202020202020202020202
               0202020202020202020202020202020202020202020202020202020202
@@ -1336,8 +1336,8 @@ object frmMain: TfrmMain
       Caption = '&Open Manifest ...'
       Hint = 'Open an existing plugin manifest.'
       ImageIndex = 1
-      OnExecute = FileSafeOpenExecute
       ShortCut = 16463
+      OnExecute = FileSafeOpenExecute
     end
     object ProgramOptions: TAction
       Category = 'Program'

@@ -1474,10 +1474,10 @@ object frmAbout: TfrmAbout
     AC41E001AC41C001AC41C001AC418001AC418001AC418001AC418001AC418001
     AC41C003AC41C003AC41E007AC41F01FAC41FFFFAC41
   }
-  OnShow = FormShow
   Position = poMainFormCenter
   ShowHint = True
-  LCLVersion = '3.5.0.0'
+  LCLVersion = '4.0.0.1'
+  OnShow = FormShow
   object memoAboutText: TMemo
     Left = 0
     Height = 205
@@ -1524,7 +1524,6 @@ object frmAbout: TfrmAbout
       Hint = 'Visit the Sanguine PJ Editor website.'
       Top = 8
       Width = 48
-      OnClick = HandleSiteClicks
       Picture.Data = {
         1754506F727461626C654E6574776F726B477261706869631B3C010089504E47
         0D0A1A0A0000000D49484452000001000000010008060000005C72A866000000
@@ -4058,6 +4057,7 @@ object frmAbout: TfrmAbout
         36F86F304F5118F76948050000000049454E44AE426082
       }
       Stretch = True
+      OnClick = HandleSiteClicks
     end
     object lblBuildDate: TLabel
       Left = 8
@@ -4129,7 +4129,6 @@ object frmAbout: TfrmAbout
       Hint = 'Visit the GPL V3 website.'
       Top = 26
       Width = 128
-      OnClick = HandleSiteClicks
       Picture.Data = {
         1754506F727461626C654E6574776F726B477261706869634D11000089504E47
         0D0A1A0A0000000D494844520000007F000000330806000000BE27D704000000
@@ -4272,6 +4271,7 @@ object frmAbout: TfrmAbout
         7D4CB251CC3EF80617562BCCA9525DF16578B6FF0718405FF78ECFDED1000000
         0049454E44AE426082
       }
+      OnClick = HandleSiteClicks
     end
     object imgLaz: TImage
       Tag = 2
@@ -4281,7 +4281,6 @@ object frmAbout: TfrmAbout
       Hint = 'Visit the Lazarus website.'
       Top = 26
       Width = 58
-      OnClick = HandleSiteClicks
       Picture.Data = {
         1754506F727461626C654E6574776F726B47726170686963553B000089504E47
         0D0A1A0A0000000D494844520000005E0000005E0806000000AAD2A36E000000
@@ -4762,6 +4761,7 @@ object frmAbout: TfrmAbout
       }
       Proportional = True
       Stretch = True
+      OnClick = HandleSiteClicks
     end
     object imgLSRP: TImage
       Left = 16
@@ -5119,7 +5119,6 @@ object frmAbout: TfrmAbout
       Hint = 'Visit the Sanguine Modules Mutants website.'
       Top = 36
       Width = 48
-      OnClick = HandleSiteClicks
       Picture.Data = {
         1754506F727461626C654E6574776F726B477261706869639C2E010089504E47
         0D0A1A0A0000000D4948445200000100000000EE0806000000D64BD92000000A
@@ -7545,6 +7544,7 @@ object frmAbout: TfrmAbout
         0F4A00002E87A9A17A8BD66D0000000049454E44AE426082
       }
       Stretch = True
+      OnClick = HandleSiteClicks
     end
     object bvlMonsters: TBevel
       Left = 376
@@ -7560,7 +7560,6 @@ object frmAbout: TfrmAbout
       Hint = 'Visit the Sanguine Modules Monsters website.'
       Top = 36
       Width = 48
-      OnClick = HandleSiteClicks
       Picture.Data = {
         1754506F727461626C654E6574776F726B4772617068696362FB000089504E47
         0D0A1A0A0000000D4948445200000100000001070806000000417798DE00000A
@@ -9576,6 +9575,7 @@ object frmAbout: TfrmAbout
         30C75DEE7AE9071ADA02414B8F6128A50F6D0000000049454E44AE426082
       }
       Stretch = True
+      OnClick = HandleSiteClicks
     end
   end
 end
