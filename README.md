@@ -6,7 +6,7 @@ Tools for easier editing and updating of VCV Rack's plugin.json manifests.
 
 ### Sanguine PJ Editor
 
-- A GUI tool for editing and creating the plugin.json manifests used by VCV Rack.
+A GUI tool for editing and creating the plugin.json manifests used by VCV Rack.
 
 - The program tries to be as easy and self-evident as possible.
 
