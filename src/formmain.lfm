@@ -11,7 +11,7 @@ object frmMain: TfrmMain
   Menu = MainMenu
   Position = poDefault
   ShowHint = True
-  LCLVersion = '4.0.0.1'
+  LCLVersion = '4.4.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy

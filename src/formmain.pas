@@ -293,7 +293,7 @@ end;
 
 procedure TfrmMain.DataCommitChangesExecute(Sender: TObject);
 begin
-  Cursor := crHourGlass;
+  Screen.Cursor := crHourGlass;
   ChangePanelText(iStatusPanelState, rsStatusApplying);
   Application.ProcessMessages;
   FModuleGridMutex := True;
@@ -302,12 +302,12 @@ begin
   FChangesCommited := True;
   FModuleGridMutex := False;
   ChangePanelText(iStatusPanelState, rsStatusReady);
-  Cursor := crDefault;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TfrmMain.DataDiscardChangesExecute(Sender: TObject);
 begin
-  Cursor := crHourGlass;
+  Screen.Cursor := crHourGlass;
   ChangePanelText(iStatusPanelState, rsStatusReverting);
   Application.ProcessMessages;
   FModuleGridMutex := True;
@@ -331,7 +331,7 @@ begin
   SetModified(True);
   FModuleGridMutex := False;
   ChangePanelText(iStatusPanelState, rsStatusReady);
-  Cursor := crDefault;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TfrmMain.FileNewExecute(Sender: TObject);
@@ -394,7 +394,7 @@ begin
     FModuleGridMutex := True;
     if OpenDialog.Execute then
     begin
-      Cursor := crHourGlass;
+      Screen.Cursor := crHourGlass;
       ChangePanelText(iStatusPanelState, rsStatusLoading);
       Application.ProcessMessages;
       ClearData;
@@ -422,7 +422,7 @@ begin
 
       end;
       ChangePanelText(iStatusPanelState, rsStatusReady);
-      Cursor := crDefault;
+      Screen.Cursor := crDefault;
     end;
     FInvalidPluginInfo := False;
     FChangesCommited := True;
@@ -455,7 +455,7 @@ begin
 
   if SaveDialog.Execute then
   begin
-    Cursor := crHourGlass;
+    Screen.Cursor := crHourGlass;
     ChangePanelText(iStatusPanelState, rsStatusSaving);
     Application.ProcessMessages;
 
@@ -498,7 +498,7 @@ begin
     end;
 
     ChangePanelText(iStatusPanelState, rsStatusReady);
-    Cursor := crDefault;
+    Screen.Cursor := crDefault;
   end;
 end;
 
