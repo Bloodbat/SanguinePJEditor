@@ -44,8 +44,8 @@ begin
   {$IF (FPC_FULLVERSION < 30202)}
   {$FATAL You need at least Free Pascal version 3.2.2 to compile Sanguine PJ Editor.}
   {$ENDIF}
-  {$IF (lcl_fullversion < 3040000)}
-  {$FATAL You need at least Lazarus 3.4.0.0 to compile Sanguine PJ Editor.}
+  {$IF (lcl_fullversion < 4040000)}
+  {$FATAL You need at least Lazarus 4.4.0.0 to compile Sanguine PJ Editor.}
   {$ENDIF}
 
   InitVersionInfo(ProgramName, ProgramMajor, ProgramMinor, ProgramRevision, SVN);
