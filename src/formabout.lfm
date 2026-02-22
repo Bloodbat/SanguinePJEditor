@@ -1476,7 +1476,7 @@ object frmAbout: TfrmAbout
   }
   Position = poMainFormCenter
   ShowHint = True
-  LCLVersion = '4.0.0.1'
+  LCLVersion = '4.5.0.0'
   OnShow = FormShow
   object memoAboutText: TMemo
     Left = 0

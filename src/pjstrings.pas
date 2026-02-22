@@ -1,7 +1,7 @@
 {******************************************************************************}
 {                           Sanguine PJ Editor                                 }
 
-{   Copyright (C) 2024-2025
+{   Copyright (C) 2024-2026
     La Serpiente y la Rosa Producciones.                                       }
 
 {   This file is part of Sanguine PJ Editor.                                   }
@@ -77,7 +77,7 @@ resourcestring
   rsAboutDate = 'Built on: %.2d/%.2d/%d';
   rsAboutFPCVer = 'FPC Version: %d.%d.%d';
   rsAboutLazVer = 'Lazarus Version: %s';
-  rsAboutCopyYear = 'Copyright © 2024-2025.';
+  rsAboutCopyYear = 'Copyright © 2024-2026.';
   rsAboutSerpienteyRosa = 'La Serpiente y la Rosa Producciones.';
   rsAboutCodeCreditHeader = 'Coding and design:';
   rsAboutRightsReserved = 'All Rights Reserved.';

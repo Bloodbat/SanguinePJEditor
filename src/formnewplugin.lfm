@@ -11,7 +11,7 @@ object frmNewPlugin: TfrmNewPlugin
   Menu = MainMenu
   Position = poMainFormCenter
   ShowHint = True
-  LCLVersion = '4.0.0.1'
+  LCLVersion = '4.5.0.0'
   OnShow = FormShow
   object pnlControls: TPanel
     Left = 0
@@ -160,7 +160,7 @@ object frmNewPlugin: TfrmNewPlugin
     end
     object ToolButton2: TToolButton
       Left = 47
-      Height = 22
+      Height = 8
       Top = 2
       Style = tbsSeparator
     end

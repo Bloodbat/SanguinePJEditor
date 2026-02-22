@@ -1,6 +1,6 @@
 (*                           Bloodbat's Code Library                          *)
 
-(* Copyright 2014-2025 Bloodbat
+(* Copyright 2014-2026 Bloodbat
    La Serpiente y la Rosa Producciones.                                       *)
 (* Bloodbat's Code Library is free software: you can redistribute it and/or
    modify it under the terms of the GNU General Public License as published by

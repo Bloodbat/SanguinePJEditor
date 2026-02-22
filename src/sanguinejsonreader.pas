@@ -1,7 +1,7 @@
 {******************************************************************************}
 {                           Sanguine PJ Editor                                 }
 
-{   Copyright (C) 2024-2025
+{   Copyright (C) 2024-2026
     La Serpiente y la Rosa Producciones.                                       }
 
 {   This file is part of Sanguine PJ Editor.                                   }
