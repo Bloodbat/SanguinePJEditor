@@ -105,6 +105,10 @@ begin
     rsAboutCodeCreditHeader, sAboutBloodbatCredit, rsAboutRightsReserved,
     EmptyStr, rsAboutIconsCredit, EmptyStr, rsAboutGNU1, EmptyStr,
     rsAboutGNU2, EmptyStr, rsAboutGNU3]);
+  {$IFNDEF WINDOWS}
+  memoAboutText.SelStart := 0;
+  memoAboutText.SetFocus;
+  {$ENDIF}
 end;
 
 procedure TfrmAbout.HandleSiteClicks(Sender: TObject);
