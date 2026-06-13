@@ -436,12 +436,17 @@ object frmMain: TfrmMain
           AutoFillColumns = True
           BorderSpacing.Right = 8
           BorderStyle = bsNone
-          ColCount = 2
+          ColCount = 3
           Columns = <          
             item
               ReadOnly = True
               Title.Caption = 'Slug'
-              Width = 134
+              Width = 67
+            end          
+            item
+              ReadOnly = True
+              Title.Caption = 'Name'
+              Width = 67
             end          
             item
               ButtonStyle = cbsCheckboxColumn
@@ -462,7 +467,8 @@ object frmMain: TfrmMain
           OnCheckboxToggled = strgrdModulesCheckboxToggled
           OnColRowDeleted = strgrdModulesColRowDeleted
           ColWidths = (
-            134
+            67
+            67
             50
           )
         end

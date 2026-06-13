@@ -259,7 +259,8 @@ const
   iStatusPanelModuleCount = 3;
 
   iColumnSlug = 0;
-  iColumnHidden = 1;
+  iColumnName = 1;
+  iColumnHidden = 2;
 
   { TfrmMain }
 
@@ -875,7 +876,8 @@ procedure TfrmMain.FillModuleList;
 var
   IsHidden: boolean;
   Module: integer;
-  Slug: string;
+  ModuleName: string = '';
+  Slug: string = '';
   Value: variant;
 begin
   for Module := 0 to FModulesWorking.Count - 1 do
@@ -883,12 +885,18 @@ begin
       Value, varString) then
     begin
       Slug := VarToStr(Value);
+
+      Name := '';
+      if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iName],
+        Value, varString) then
+        ModuleName := VarToStr(Value);
+
       IsHidden := False;
       if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iHidden],
         Value, varBoolean) then
         IsHidden := Value;
       strgrdModules.InsertRowWithValues(strgrdModules.RowCount,
-        [Slug, ArrayCheckboxValues[IsHidden]]);
+        [Slug, ModuleName, ArrayCheckboxValues[IsHidden]]);
     end;
 end;
 
