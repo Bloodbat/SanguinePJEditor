@@ -431,7 +431,7 @@ object frmMain: TfrmMain
           Top = 26
           Width = 184
           Align = alClient
-          AlternateColor = clDefault
+          AlternateColor = 16445945
           AutoEdit = False
           AutoFillColumns = True
           BorderSpacing.Right = 8
