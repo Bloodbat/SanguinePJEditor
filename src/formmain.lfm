@@ -11,7 +11,7 @@ object frmMain: TfrmMain
   Menu = MainMenu
   Position = poDefault
   ShowHint = True
-  LCLVersion = '4.5.0.0'
+  LCLVersion = '4.9.0.0'
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -42,7 +42,7 @@ object frmMain: TfrmMain
     end
     object tbSeparator2: TToolButton
       Left = 126
-      Height = 5
+      Height = 22
       Top = 2
       Style = tbsDivider
     end
@@ -63,21 +63,21 @@ object frmMain: TfrmMain
     end
     object tbSeparator1: TToolButton
       Left = 75
-      Height = 5
+      Height = 22
       Top = 2
       Caption = 'tbSeparator1'
       Style = tbsDivider
     end
     object tbSeparator3: TToolButton
       Left = 24
-      Height = 5
+      Height = 22
       Top = 2
       Caption = 'tbSeparator3'
       Style = tbsDivider
     end
     object tbSeparator4: TToolButton
       Left = 154
-      Height = 5
+      Height = 22
       Top = 2
       Caption = 'tbSeparator4'
       Style = tbsDivider
@@ -89,7 +89,7 @@ object frmMain: TfrmMain
     end
     object ToolButton1: TToolButton
       Left = 182
-      Height = 5
+      Height = 22
       Top = 2
       Caption = 'ToolButton1'
       Style = tbsDivider

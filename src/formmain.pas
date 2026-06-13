@@ -875,6 +875,7 @@ procedure TfrmMain.FillModuleList;
 var
   IsHidden: boolean;
   Module: integer;
+  Slug: string;
   HiddenValue: variant;
   Value: variant;
 begin
@@ -882,12 +883,13 @@ begin
     if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iSlug],
       Value, varString) then
     begin
+      Slug := VarToStr(Value);
       IsHidden := False;
       if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iHidden],
         HiddenValue, varBoolean) then
         IsHidden := HiddenValue;
       strgrdModules.InsertRowWithValues(strgrdModules.RowCount,
-        [VarToStr(Value), ArrayCheckboxValues[IsHidden]]);
+        [Slug, ArrayCheckboxValues[IsHidden]]);
 
     end;
 end;
