@@ -876,7 +876,6 @@ var
   IsHidden: boolean;
   Module: integer;
   Slug: string;
-  HiddenValue: variant;
   Value: variant;
 begin
   for Module := 0 to FModulesWorking.Count - 1 do
@@ -886,11 +885,10 @@ begin
       Slug := VarToStr(Value);
       IsHidden := False;
       if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iHidden],
-        HiddenValue, varBoolean) then
-        IsHidden := HiddenValue;
+        Value, varBoolean) then
+        IsHidden := Value;
       strgrdModules.InsertRowWithValues(strgrdModules.RowCount,
         [Slug, ArrayCheckboxValues[IsHidden]]);
-
     end;
 end;
 
