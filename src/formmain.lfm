@@ -437,6 +437,7 @@ object frmMain: TfrmMain
           BorderSpacing.Right = 8
           BorderStyle = bsNone
           ColCount = 3
+          ColumnClickSorts = True
           Columns = <          
             item
               ReadOnly = True
@@ -466,6 +467,7 @@ object frmMain: TfrmMain
           OnBeforeSelection = strgrdModulesBeforeSelection
           OnCheckboxToggled = strgrdModulesCheckboxToggled
           OnColRowDeleted = strgrdModulesColRowDeleted
+          OnSelection = strgrdModulesSelection
           ColWidths = (
             67
             67

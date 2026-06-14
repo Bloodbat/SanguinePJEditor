@@ -158,6 +158,7 @@ type
       aCol, aRow: integer; aState: TCheckboxState);
     procedure strgrdModulesColRowDeleted(Sender: TObject; IsColumn: boolean;
       sIndex, tIndex: integer);
+    procedure strgrdModulesSelection(Sender: TObject; aCol, aRow: integer);
   protected
     procedure PrintParserError;
   private
@@ -172,6 +173,7 @@ type
     FModified: boolean;
     FModuleGridMutex: boolean;
     FValidManifest: boolean;
+    FModuleData: TJSONObject;
     FPluginBase: TJSONObject;
     FRootWorking: TJSONObject;
     FModulesWorking: TJSONArray;
@@ -193,6 +195,7 @@ type
       LabelEd: TLabeledEdit);
     function FindData(TheRoot: TJSONData; const Path: TJSONStringType;
       out Value: variant; const VariantKind: integer): boolean;
+    function FindModuleBySlug(const Slug: string): integer;
     procedure FreeObjects;
     procedure LoadConfig;
     procedure SaveConfig;
@@ -267,16 +270,14 @@ const
 procedure TfrmMain.chkgrpTagsItemClick(Sender: TObject; Index: integer);
 var
   i: integer;
-  ModuleData: TJSONObject;
   Tags: TJSONArray;
 begin
-  if FModuleGridMutex then
+  if FModuleGridMutex or (FModuleData = nil) then
     Exit;
-  ModuleData := FModulesWorking.Items[strgrdModules.Row - 1] as TJSONObject;
-  Tags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+  Tags := FModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
   if Tags <> nil then
   begin
-    ModuleData.Delete(ArrayManifestKeywords[iTags]);
+    FModuleData.Delete(ArrayManifestKeywords[iTags]);
     Tags := nil;
   end;
 
@@ -287,7 +288,7 @@ begin
       Tags.Add(chkgrpTags.Items[i]);
 
   if Tags.Count > 0 then
-    ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
+    FModuleData.Add(ArrayManifestKeywords[iTags], Tags);
   SetModified(True);
   FChangesCommited := False;
 end;
@@ -322,6 +323,7 @@ begin
   begin
     FillModuleList;
     strgrdModules.Row := 1;
+    strgrdModulesSelection(Self, strgrdModules.Col, strgrdModules.Row);
     strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row);
   end;
   UpdateModuleCount;
@@ -415,6 +417,7 @@ begin
         begin
           FillModuleList;
           strgrdModules.Row := 1;
+          strgrdModulesSelection(Self, strgrdModules.Col, strgrdModules.Row);
           strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row);
         end;
         FFileName := OpenDialog.FileName;
@@ -423,7 +426,6 @@ begin
 
       end;
       ChangePanelText(iStatusPanelState, rsStatusReady);
-      Screen.Cursor := crDefault;
     end;
     FInvalidPluginInfo := False;
     FChangesCommited := True;
@@ -432,6 +434,7 @@ begin
     CheckValidModule;
     CheckValidPlugin;
   end;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TfrmMain.FileSafeSaveAsExecute(Sender: TObject);
@@ -528,6 +531,7 @@ begin
     Position := poDefault;
   FErrorModules := TIntegerSet.Create;
   FChangesCommited := True;
+  FModuleData := nil;
   SetModified(False);
   ToggleGUI(False);
 end;
@@ -551,13 +555,11 @@ end;
 procedure TfrmMain.HandleModuleEditorsChange(Sender: TObject);
 var
   LabelEd: TLabeledEdit;
-  ModuleData: TJSONObject;
 begin
-  if FModuleGridMutex then
+  if FModuleGridMutex or (FModuleData = nil) then
     Exit;
-  ModuleData := FModulesWorking.Items[strgrdModules.Row - 1] as TJSONObject;
   LabelEd := Sender as TLabeledEdit;
-  UpdateStringField(ModuleData, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
+  UpdateStringField(FModuleData, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
   CheckValidModule;
   SetModified(True);
   FChangesCommited := False;
@@ -634,19 +636,36 @@ begin
 end;
 
 procedure TfrmMain.ModuleRemoveExecute(Sender: TObject);
+var
+  ModulePosition: integer = -1;
 begin
+  Screen.Cursor := crHourGlass;
   FModuleGridMutex := True;
-  FModulesWorking.Delete(strgrdModules.Row - 1);
-  FErrorModules.Delete(strgrdModules.Row);
-  strgrdModules.DeleteRow(strgrdModules.Row);
-  if strgrdModules.Row > 0 then
-    strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row)
-  else
-    ClearModuleInfo;
-  UpdateModuleCount;
-  SetModified(True);
-  FChangesCommited := False;
+
+  ModulePosition := FindModuleBySlug(strgrdModules.Cells[iColumnSlug,
+    strgrdModules.Row]);
+
+  if ModulePosition > -1 then
+  begin
+    FModulesWorking.Delete(ModulePosition);
+    FErrorModules.Delete(strgrdModules.Row);
+    strgrdModules.DeleteRow(strgrdModules.Row);
+    if strgrdModules.Row > 0 then
+    begin
+      strgrdModulesSelection(Self, strgrdModules.Col, strgrdModules.Row);
+      strgrdModulesAfterSelection(Self, strgrdModules.Col, strgrdModules.Row);
+    end
+    else
+    begin
+      ClearModuleInfo;
+      FModuleData := nil;
+    end;
+    UpdateModuleCount;
+    SetModified(True);
+    FChangesCommited := False;
+  end;
   FModuleGridMutex := False;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TfrmMain.ProgramOptionsExecute(Sender: TObject);
@@ -691,28 +710,29 @@ end;
 procedure TfrmMain.strgrdModulesAfterSelection(Sender: TObject; aCol, aRow: integer);
 begin
   ClearModuleInfo;
-  if strgrdModules.RowCount > 1 then
+
+  if FModuleData <> nil then
     FillModuleData;
+
   ModuleRemove.Enabled := CheckCanDeleteModule;
   FModuleGridMutex := False;
+  Screen.Cursor := crDefault;
 end;
 
 procedure TfrmMain.strgrdModulesBeforeSelection(Sender: TObject; aCol, aRow: integer);
 begin
+  Screen.Cursor := crHourGlass;
   FModuleGridMutex := True;
 end;
 
 procedure TfrmMain.strgrdModulesCheckboxToggled(Sender: TObject;
   aCol, aRow: integer; aState: TCheckboxState);
-var
-  ModuleData: TJSONObject;
 begin
-  if FModuleGridMutex then
+  if FModuleGridMutex or (FModuleData = nil) then
     Exit;
   if aCol = iColumnHidden then
   begin
-    ModuleData := FModulesWorking.Items[strgrdModules.Row - 1] as TJSONObject;
-    UpdateBooleanField(ModuleData, ArrayManifestKeywords[iHidden],
+    UpdateBooleanField(FModuleData, ArrayManifestKeywords[iHidden],
       ArrayChecboxBooleans[aState]);
   end;
   SetModified(True);
@@ -723,6 +743,17 @@ procedure TfrmMain.strgrdModulesColRowDeleted(Sender: TObject;
   IsColumn: boolean; sIndex, tIndex: integer);
 begin
   ModuleRemove.Enabled := CheckCanDeleteModule;
+end;
+
+procedure TfrmMain.strgrdModulesSelection(Sender: TObject; aCol, aRow: integer);
+var
+  ModulePosition: integer = -1;
+begin
+  FModuleData := nil;
+  if strgrdModules.RowCount > 1 then
+    ModulePosition := FindModuleBySlug(strgrdModules.Cells[iColumnSlug, aRow]);
+  if ModulePosition > -1 then
+    FModuleData := FModulesWorking.Objects[ModulePosition];
 end;
 
 procedure TfrmMain.PrintParserError;
@@ -853,22 +884,22 @@ end;
 procedure TfrmMain.FillModuleData;
 var
   IsHidden: boolean = False;
-  Value: variant;
-  ModuleData: TJSONData;
   Tags: TJSONArray;
+  Value: variant;
 begin
-  ModuleData := FModulesWorking.Items[strgrdModules.Row - 1];
-  FillTextBox(ModuleData, ArrayManifestKeywords[iSlug], lbledModuleSlug);
-  FillTextBox(ModuleData, ArrayManifestKeywords[iName], lbledModuleName);
-  FillTextBox(ModuleData, ArrayManifestKeywords[iDescription], lbledModuleDescription);
-  FillTextBox(ModuleData, ArrayManifestKeywords[iKeywords], lbledModuleKeywords);
-  FillTextBox(ModuleData, ArrayManifestKeywords[iManualURL], lbledModuleManualURL);
-  FillTextBox(ModuleData, ArrayManifestKeywords[iModularGridURL],
+  FillTextBox(FModuleData, ArrayManifestKeywords[iSlug], lbledModuleSlug);
+  FillTextBox(FModuleData, ArrayManifestKeywords[iName], lbledModuleName);
+  FillTextBox(FModuleData, ArrayManifestKeywords[iDescription],
+    lbledModuleDescription);
+  FillTextBox(FModuleData, ArrayManifestKeywords[iKeywords], lbledModuleKeywords);
+  FillTextBox(FModuleData, ArrayManifestKeywords[iManualURL], lbledModuleManualURL);
+  FillTextBox(FModuleData, ArrayManifestKeywords[iModularGridURL],
     lbledModuleModularGridURL);
-  if FindData(ModuleData, ArrayManifestKeywords[iHidden], Value, varBoolean) then
+  if FindData(FModuleData, ArrayManifestKeywords[iHidden], Value, varBoolean) then
     IsHidden := Value;
-  strgrdModules.Cells[iColumnHidden, strgrdModules.Row] := ArrayCheckboxValues[IsHidden];
-  Tags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+  strgrdModules.Cells[iColumnHidden, strgrdModules.Row] :=
+    ArrayCheckboxValues[IsHidden];
+  Tags := FModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
   FillTags(Tags);
 end;
 
@@ -973,6 +1004,29 @@ begin
       varInteger: Value := Data.AsInteger;
       varSingle: Value := Data.AsFloat;
       varBoolean: Value := Data.AsBoolean;
+    end;
+  end;
+end;
+
+function TfrmMain.FindModuleBySlug(const Slug: string): integer;
+var
+  Module: integer;
+  Value: variant;
+  SlugString: string;
+  ModuleData: TJSONObject;
+begin
+  Result := -1;
+  for Module := 0 to FModulesWorking.Count - 1 do
+  begin
+    ModuleData := FModulesWorking.Objects[Module];
+    if FindData(ModuleData, ArrayManifestKeywords[iSlug], Value, varString) then
+    begin
+      SlugString := VarToStr(Value);
+      if SlugString = Slug then
+      begin
+        Result := Module;
+        Break;
+      end;
     end;
   end;
 end;
