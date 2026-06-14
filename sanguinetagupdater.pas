@@ -232,7 +232,7 @@ type
     TagString: string;
   begin
     Result := False;
-    FModules := (FRoot.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray);
+    FModules := (FRoot.FindPath(ArrayManifestKeywords[kwModules]) as TJSONArray);
     if FModules <> nil then
     begin
       if FModules.Count > 0 then
@@ -240,11 +240,11 @@ type
         for Module := 0 to FModules.Count - 1 do
         begin
           ModuleData := FModules.Items[Module];
-          SlugData := ModuleData.FindPath(ArrayManifestKeywords[iSlug]);
+          SlugData := ModuleData.FindPath(ArrayManifestKeywords[kwSlug]);
           if SlugData <> nil then
           begin
             SlugName := SlugData.AsString;
-            Tags := (ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray);
+            Tags := (ModuleData.FindPath(ArrayManifestKeywords[kwTags]) as TJSONArray);
             if Tags <> nil then
               if Tags.Count > 0 then
                 for CurrentTag := 0 to Tags.Count - 1 do

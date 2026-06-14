@@ -274,10 +274,10 @@ var
 begin
   if FModuleGridMutex or (FModuleData = nil) then
     Exit;
-  Tags := FModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+  Tags := FModuleData.FindPath(ArrayManifestKeywords[kwTags]) as TJSONArray;
   if Tags <> nil then
   begin
-    FModuleData.Delete(ArrayManifestKeywords[iTags]);
+    FModuleData.Delete(ArrayManifestKeywords[kwTags]);
     Tags := nil;
   end;
 
@@ -288,7 +288,7 @@ begin
       Tags.Add(chkgrpTags.Items[i]);
 
   if Tags.Count > 0 then
-    FModuleData.Add(ArrayManifestKeywords[iTags], Tags);
+    FModuleData.Add(ArrayManifestKeywords[kwTags], Tags);
   SetModified(True);
   FChangesCommited := False;
 end;
@@ -317,7 +317,7 @@ begin
   FRootWorking.Free;
   FRootWorking := FPluginBase.Clone as TJSONObject;
   FillPluginData;
-  FModulesWorking := FRootWorking.FindPath(ArrayManifestKeywords[iModules]) as
+  FModulesWorking := FRootWorking.FindPath(ArrayManifestKeywords[kwModules]) as
     TJSONArray;
   if FModulesWorking <> nil then
   begin
@@ -361,11 +361,11 @@ begin
         SetTextBox(frmNewPlugin.lbledPluginAuthor.Text, lbledPluginAuthor);
         SetTextBox(frmNewPlugin.lbledPluginVersion.Text, lbledPluginVersion);
         SetTextBox(frmNewPlugin.lbledPluginLicense.Text, lbledPluginLicense);
-        NewPluginData := TJSONObject.Create([ArrayManifestKeywords[iSlug],
-          lbledPluginSlug.Text, ArrayManifestKeywords[iName],
-          lbledPluginName.Text, ArrayManifestKeywords[iAuthor],
-          lbledPluginAuthor.Text, ArrayManifestKeywords[iVersion],
-          lbledPluginVersion.Text, ArrayManifestKeywords[iLicense],
+        NewPluginData := TJSONObject.Create([ArrayManifestKeywords[kwSlug],
+          lbledPluginSlug.Text, ArrayManifestKeywords[kwName],
+          lbledPluginName.Text, ArrayManifestKeywords[kwAuthor],
+          lbledPluginAuthor.Text, ArrayManifestKeywords[kwVersion],
+          lbledPluginVersion.Text, ArrayManifestKeywords[kwLicense],
           lbledPluginLicense.Text]);
         FRootWorking := NewPluginData;
         FPluginBase := FRootWorking.Clone as TJSONObject;
@@ -411,7 +411,7 @@ begin
         ToggleGUI(True);
         FPluginBase := FRootWorking.Clone as TJSONObject;
         FillPluginData;
-        FModulesWorking := FRootWorking.FindPath(ArrayManifestKeywords[iModules]) as
+        FModulesWorking := FRootWorking.FindPath(ArrayManifestKeywords[kwModules]) as
           TJSONArray;
         if FModulesWorking <> nil then
         begin
@@ -464,26 +464,26 @@ begin
     Application.ProcessMessages;
 
     // Keep modules after plugin info.
-    TmpModules := FPluginBase.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
+    TmpModules := FPluginBase.FindPath(ArrayManifestKeywords[kwModules]) as TJSONArray;
     if TmpModules <> nil then
     begin
       Modules := TmpModules.Clone as TJSONArray;
-      FPluginBase.Delete(ArrayManifestKeywords[iModules]);
+      FPluginBase.Delete(ArrayManifestKeywords[kwModules]);
       TmpModules := nil;
-      FPluginBase.Add(ArrayManifestKeywords[iModules], Modules);
+      FPluginBase.Add(ArrayManifestKeywords[kwModules], Modules);
 
       // Keep tags after module info.
-      Modules := FPluginBase.FindPath(ArrayManifestKeywords[iModules]) as TJSONArray;
+      Modules := FPluginBase.FindPath(ArrayManifestKeywords[kwModules]) as TJSONArray;
       for i := 0 to Modules.Count - 1 do
       begin
         ModuleData := Modules.Items[i] as TJSONObject;
-        TmpTags := ModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+        TmpTags := ModuleData.FindPath(ArrayManifestKeywords[kwTags]) as TJSONArray;
         if TmpTags <> nil then
         begin
           Tags := TmpTags.Clone as TJSONArray;
-          ModuleData.Delete(ArrayManifestKeywords[iTags]);
+          ModuleData.Delete(ArrayManifestKeywords[kwTags]);
           TmpTags := nil;
-          ModuleData.Add(ArrayManifestKeywords[iTags], Tags);
+          ModuleData.Add(ArrayManifestKeywords[kwTags], Tags);
           Tags := nil;
         end;
       end;
@@ -559,7 +559,7 @@ begin
   if FModuleGridMutex or (FModuleData = nil) then
     Exit;
   LabelEd := Sender as TLabeledEdit;
-  UpdateStringField(FModuleData, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
+  UpdateStringField(FModuleData, ArrayManifestKeywords[Keywords(LabelEd.Tag)], LabelEd);
   CheckValidModule;
   SetModified(True);
   FChangesCommited := False;
@@ -570,7 +570,7 @@ var
   LabelEd: TLabeledEdit;
 begin
   LabelEd := Sender as TLabeledEdit;
-  UpdateStringField(FRootWorking, ArrayManifestKeywords[LabelEd.Tag], LabelEd);
+  UpdateStringField(FRootWorking, ArrayManifestKeywords[Keywords(LabelEd.Tag)], LabelEd);
   CheckValidPlugin;
   SetModified(True);
   FChangesCommited := False;
@@ -618,11 +618,11 @@ begin
       if FModulesWorking = nil then
       begin
         JArray := TJSONArray.Create;
-        ItemId := FRootWorking.Add(ArrayManifestKeywords[iModules], JArray);
+        ItemId := FRootWorking.Add(ArrayManifestKeywords[kwModules], JArray);
         FModulesWorking := FRootWorking.Items[ItemId] as TJSONArray;
       end;
-      JObject := TJSONObject.Create([ArrayManifestKeywords[iSlug],
-        lbledModuleSlug.Text, ArrayManifestKeywords[iName], lbledModuleName.Text]);
+      JObject := TJSONObject.Create([ArrayManifestKeywords[kwSlug],
+        lbledModuleSlug.Text, ArrayManifestKeywords[kwName], lbledModuleName.Text]);
       FModulesWorking.Add(JObject);
       strgrdModules.InsertRowWithValues(strgrdModules.RowCount,
         [lbledModuleSlug.Text, ArrayCheckboxValues[False]]);
@@ -732,7 +732,7 @@ begin
     Exit;
   if aCol = iColumnHidden then
   begin
-    UpdateBooleanField(FModuleData, ArrayManifestKeywords[iHidden],
+    UpdateBooleanField(FModuleData, ArrayManifestKeywords[kwHidden],
       ArrayChecboxBooleans[aState]);
   end;
   SetModified(True);
@@ -887,19 +887,19 @@ var
   Tags: TJSONArray;
   Value: variant;
 begin
-  FillTextBox(FModuleData, ArrayManifestKeywords[iSlug], lbledModuleSlug);
-  FillTextBox(FModuleData, ArrayManifestKeywords[iName], lbledModuleName);
-  FillTextBox(FModuleData, ArrayManifestKeywords[iDescription],
+  FillTextBox(FModuleData, ArrayManifestKeywords[kwSlug], lbledModuleSlug);
+  FillTextBox(FModuleData, ArrayManifestKeywords[kwName], lbledModuleName);
+  FillTextBox(FModuleData, ArrayManifestKeywords[kwDescription],
     lbledModuleDescription);
-  FillTextBox(FModuleData, ArrayManifestKeywords[iKeywords], lbledModuleKeywords);
-  FillTextBox(FModuleData, ArrayManifestKeywords[iManualURL], lbledModuleManualURL);
-  FillTextBox(FModuleData, ArrayManifestKeywords[iModularGridURL],
+  FillTextBox(FModuleData, ArrayManifestKeywords[kwKeywords], lbledModuleKeywords);
+  FillTextBox(FModuleData, ArrayManifestKeywords[kwManualURL], lbledModuleManualURL);
+  FillTextBox(FModuleData, ArrayManifestKeywords[kwModularGridURL],
     lbledModuleModularGridURL);
-  if FindData(FModuleData, ArrayManifestKeywords[iHidden], Value, varBoolean) then
+  if FindData(FModuleData, ArrayManifestKeywords[kwHidden], Value, varBoolean) then
     IsHidden := Value;
   strgrdModules.Cells[iColumnHidden, strgrdModules.Row] :=
     ArrayCheckboxValues[IsHidden];
-  Tags := FModuleData.FindPath(ArrayManifestKeywords[iTags]) as TJSONArray;
+  Tags := FModuleData.FindPath(ArrayManifestKeywords[kwTags]) as TJSONArray;
   FillTags(Tags);
 end;
 
@@ -912,18 +912,18 @@ var
   Value: variant;
 begin
   for Module := 0 to FModulesWorking.Count - 1 do
-    if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iSlug],
+    if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[kwSlug],
       Value, varString) then
     begin
       Slug := VarToStr(Value);
 
       Name := '';
-      if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iName],
+      if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[kwName],
         Value, varString) then
         ModuleName := VarToStr(Value);
 
       IsHidden := False;
-      if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[iHidden],
+      if FindData(FModulesWorking.Items[Module], ArrayManifestKeywords[kwHidden],
         Value, varBoolean) then
         IsHidden := Value;
       strgrdModules.InsertRowWithValues(strgrdModules.RowCount,
@@ -933,22 +933,24 @@ end;
 
 procedure TfrmMain.FillPluginData;
 begin
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iSlug], lbledPluginSlug);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iName], lbledPluginName);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iVersion], lbledPluginVersion);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iLicense], lbledPluginLicense);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iBrand], lbledPluginBrand);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iDescription], lbledPluginDescription);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iAuthor], lbledPluginAuthor);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iAuthorEmail], lbledPluginAuthorEmail);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iAuthorURL], lbledPluginAuthorURL);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iPluginURL], lbledPluginURL);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iManualURL], lbledPluginManualURL);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iSourceURL], lbledPluginSourceURL);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iDonateURL], lbledPluginDonateURL);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iChangeLogURL],
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwSlug], lbledPluginSlug);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwName], lbledPluginName);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwVersion], lbledPluginVersion);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwLicense], lbledPluginLicense);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwBrand], lbledPluginBrand);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwDescription],
+    lbledPluginDescription);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwAuthor], lbledPluginAuthor);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwAuthorEmail],
+    lbledPluginAuthorEmail);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwAuthorURL], lbledPluginAuthorURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwPluginURL], lbledPluginURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwManualURL], lbledPluginManualURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwSourceURL], lbledPluginSourceURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwDonateURL], lbledPluginDonateURL);
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwChangeLogURL],
     lbledPluginChangelogURL);
-  FillTextBox(FRootWorking, ArrayManifestKeywords[iMinRackVersion],
+  FillTextBox(FRootWorking, ArrayManifestKeywords[kwMinRackVersion],
     lbledPluginMinRackVersion);
 end;
 
@@ -1019,7 +1021,7 @@ begin
   for Module := 0 to FModulesWorking.Count - 1 do
   begin
     ModuleData := FModulesWorking.Objects[Module];
-    if FindData(ModuleData, ArrayManifestKeywords[iSlug], Value, varString) then
+    if FindData(ModuleData, ArrayManifestKeywords[kwSlug], Value, varString) then
     begin
       SlugString := VarToStr(Value);
       if SlugString = Slug then

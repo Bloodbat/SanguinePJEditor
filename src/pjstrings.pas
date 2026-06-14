@@ -27,9 +27,14 @@ unit PJStrings;
 
 interface
 
-const
+type
+  Keywords = (kwSlug, kwName, kwModules, kwTags, kwAuthor, kwVersion,
+    kwDescription, kwLicense, kwAuthorEmail, kwAuthorURL, kwPluginURL,
+    kwManualURL, kwSourceURL, kwChangeLogURL, kwDonateURL, kwMinRackVersion,
+    kwBrand, kwKeywords, kwModularGridURL, kwHidden);
 
-  ArrayManifestKeywords: array of string = (
+const
+  ArrayManifestKeywords: array[Keywords] of string = (
     'slug',
     'name',
     'modules',
@@ -51,27 +56,6 @@ const
     'modularGridUrl',
     'hidden'
     );
-
-  iSlug = 0;
-  iName = 1;
-  iModules = 2;
-  iTags = 3;
-  iAuthor = 4;
-  iVersion = 5;
-  iDescription = 6;
-  iLicense = 7;
-  iAuthorEmail = 8;
-  iAuthorURL = 9;
-  iPluginURL = 10;
-  iManualURL = 11;
-  iSourceURL = 12;
-  iChangeLogURL = 13;
-  iDonateURL = 14;
-  iMinRackVersion = 15;
-  iBrand = 16;
-  iKeywords = 17;
-  iModularGridURL = 18;
-  iHidden = 19;
 
 resourcestring
   rsAboutDate = 'Built on: %.2d/%.2d/%d';
